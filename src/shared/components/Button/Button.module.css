@@ -1,0 +1,12 @@
+.btn {
+  padding: 7px 112px;
+  border-radius: 8px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  max-width: 268px;
+  max-height: 32px;
+  white-space: nowrap;
+  overflow: hidden;
+}

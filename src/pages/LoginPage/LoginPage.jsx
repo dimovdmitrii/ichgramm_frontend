@@ -1,4 +1,11 @@
+import Input from "../../shared/components/Input/Input";
+
 const LoginPage = () => {
-  return <h1>Login Page</h1>;
+  return (
+    <>
+      <Input />
+      <h1>Login Page</h1>
+    </>
+  );
 };
 export default LoginPage;

@@ -3,13 +3,20 @@ import HomePage from "./HomePage/HomePage";
 import LoginPage from "./LoginPage/LoginPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import NotFoundPage from "./NotFoundPage/NotFoundPage";
-import ProfilePage from "./ProfilePage/ProfilePage";
+import ProfilePage from "./MyProfilePage/MyProfilePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import SearchPage from "./SearchPage/SearchPage";
 import MessagesPage from "./MessagesPage/MessagesPage";
 import NotifivationPage from "./NotificatrionsPage/NotificationPage";
 import ResetPage from "./ResetPage/ResetPage";
 import CreatePage from "./CreatePage/CreatePage";
+import EditProfilePage from "./MyProfilePage/EditProfile";
+import MyPostPage from "./MyProfilePage/MyPostPage";
+import AddPostPage from "./MyProfilePage/AddPostPage";
+import EditPostPage from "./MyProfilePage/EditPostPage";
+import MyProfilePage from "./MyProfilePage/MyProfilePage";
+import OtherPostPage from "./OtherProfilePage/OtherPostPage";
+import OtherProfilePage from "./OtherProfilePage/OtherProfilePage";
 
 const Navigation = () => {
   return (
@@ -25,6 +32,13 @@ const Navigation = () => {
       <Route path="/notifications" element={<NotifivationPage />} />
       <Route path="/reset" element={<ResetPage />} />
       <Route path="/create" element={<CreatePage />} />
+      <Route path="/edit-profile" element={<EditProfilePage />} />
+      <Route path="/my-posts" element={<MyPostPage />} />
+      <Route path="/add-post" element={<AddPostPage />} />
+      <Route path="/edit-post" element={<EditPostPage />} />
+      <Route path="/my-profile" element={<MyProfilePage />} />
+      <Route path="/other-posts" element={<OtherPostPage />} />
+      <Route path="/other-profile" element={<OtherProfilePage />} />
     </Routes>
   );
 };
