@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+
 import styles from "./Sidebar.module.css";
 import logoIcon from "../../../assets/icons/ICHGRAM-Text.svg";
 import mainIcon from "../../../assets/icons/sidebar/main.svg";
@@ -18,41 +19,41 @@ const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
-    { 
-      path: "/home", 
-      label: "Home", 
-      icon: mainIcon, 
-      iconBold: mainBoldIcon 
+    {
+      path: "/home",
+      label: "Home",
+      icon: mainIcon,
+      iconBold: mainBoldIcon,
     },
-    { 
-      path: "/search", 
-      label: "Search", 
-      icon: searchIcon, 
-      iconBold: searchBoldIcon 
+    {
+      path: "/search",
+      label: "Search",
+      icon: searchIcon,
+      iconBold: searchBoldIcon,
     },
-    { 
-      path: "/explore", 
-      label: "Explore", 
-      icon: exploreIcon, 
-      iconBold: exploreBoldIcon 
+    {
+      path: "/explore",
+      label: "Explore",
+      icon: exploreIcon,
+      iconBold: exploreBoldIcon,
     },
-    { 
-      path: "/messages", 
-      label: "Messages", 
-      icon: messengerIcon, 
-      iconBold: messengerBoldIcon 
+    {
+      path: "/messages",
+      label: "Messages",
+      icon: messengerIcon,
+      iconBold: messengerBoldIcon,
     },
-    { 
-      path: "/notifications", 
-      label: "Notification", 
-      icon: notificationsIcon, 
-      iconBold: notificationBoldIcon 
+    {
+      path: "/notifications",
+      label: "Notification",
+      icon: notificationsIcon,
+      iconBold: notificationBoldIcon,
     },
-    { 
-      path: "/create", 
-      label: "Create", 
-      icon: createIcon, 
-      iconBold: createIcon 
+    {
+      path: "/create",
+      label: "Create",
+      icon: createIcon,
+      iconBold: createIcon,
     },
   ];
 
@@ -70,12 +71,16 @@ const Sidebar = () => {
               to={item.path}
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
-              <img 
-                src={isActive ? item.iconBold : item.icon} 
-                alt={item.label} 
-                className={styles.icon} 
+              <img
+                src={isActive ? item.iconBold : item.icon}
+                alt={item.label}
+                className={styles.icon}
               />
-              <span className={`${styles.label} ${isActive ? styles.labelBold : ""}`}>
+              <span
+                className={`${styles.label} ${
+                  isActive ? styles.labelBold : ""
+                }`}
+              >
                 {item.label}
               </span>
             </Link>
@@ -84,7 +89,11 @@ const Sidebar = () => {
       </nav>
       <Link to="/profile" className={styles.profileItem}>
         <img src={profileIcon} alt="Profile" className={styles.avatarIcon} />
-        <span className={`${styles.label} ${location.pathname === "/profile" ? styles.labelBold : ""}`}>
+        <span
+          className={`${styles.label} ${
+            location.pathname === "/profile" ? styles.labelBold : ""
+          }`}
+        >
           Profile
         </span>
       </Link>
@@ -93,4 +102,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
