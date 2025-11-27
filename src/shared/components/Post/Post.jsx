@@ -32,7 +32,11 @@ const Post = () => {
             <img src={likeIcon} alt="Like" className={styles.likeIcon} />
           </button>
           <button className={styles.actionButton}>
-            <img src={commentIcon} alt="Comment" className={styles.commentIcon} />
+            <img
+              src={commentIcon}
+              alt="Comment"
+              className={styles.commentIcon}
+            />
           </button>
         </div>
       </div>
@@ -48,17 +52,9 @@ const Post = () => {
           <span className={styles.moreText}>more</span>
         </div>
         <button className={styles.viewComments}>View all comments (732)</button>
-        <div className={styles.addComment}>
-          <input 
-            type="text" 
-            placeholder="Add a comment..." 
-            className={styles.commentInput}
-          />
-        </div>
       </div>
     </article>
   );
 };
 
 export default Post;
-

@@ -5,22 +5,23 @@
   background: var(--color-background);
   display: flex;
   flex-direction: column;
-  padding-left: 245px;
+  /* margin-left: 244px; */
 }
 
 .mainContent {
   position: relative;
   width: 100%;
-  padding: 58px 78px 0 78px;
+  padding: 58px 0 0 26px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex: 1;
 }
 
 .postsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 470px);
-  gap: 40px 40px;
+  grid-template-columns: repeat(2, 397px);
+  gap: 40px;
   justify-content: center;
   width: 100%;
   max-width: 980px;
@@ -63,4 +64,3 @@
   line-height: 16px;
   text-align: center;
 }
-

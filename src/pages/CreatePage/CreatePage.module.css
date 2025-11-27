@@ -1,0 +1,15 @@
+.pageWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  margin-left: 244px;
+}
+
+.content {
+  flex: 1;
+  padding: 58px 56px 0 56px;
+}
+

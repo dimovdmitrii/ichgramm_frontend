@@ -1,11 +1,15 @@
 .sidebar {
-  position: relative;
+  position: fixed;
+  left: 0;
+  top: 0;
   width: 244px;
   height: 100vh;
   background: var(--color-background);
   display: flex;
   flex-direction: column;
   padding: 33px 24px 0 24px;
+  z-index: 100;
+  border-right: 1px solid var(--color-border);
 }
 
 .logoContainer {
