@@ -5,7 +5,7 @@ const NotificationPage = () => {
   return (
     <>
       <Sidebar />
-      <h1>Notification Page</h1>
+     
       <Footer />
     </>
   );

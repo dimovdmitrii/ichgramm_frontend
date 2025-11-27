@@ -5,7 +5,7 @@ const MyProfilePage = () => {
   return (
     <>
       <Sidebar />
-      <h1>My Profile Page</h1>
+     
       <Footer />
     </>
   );

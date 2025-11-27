@@ -5,7 +5,7 @@ const ExplorePage = () => {
   return (
     <>
       <Sidebar />
-      <h1>Explore Page</h1>
+     
       <Footer />
     </>
   );

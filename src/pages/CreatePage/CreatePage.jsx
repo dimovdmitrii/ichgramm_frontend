@@ -5,7 +5,7 @@ const CreatePage = () => {
   return (
     <>
       <Sidebar />
-      <h1>Create Page</h1>
+      
       <Footer />
     </>
   );

@@ -84,7 +84,9 @@ const Sidebar = () => {
       </nav>
       <Link to="/profile" className={styles.profileItem}>
         <img src={profileIcon} alt="Profile" className={styles.avatarIcon} />
-        <span className={styles.label}>Profile</span>
+        <span className={`${styles.label} ${location.pathname === "/profile" ? styles.labelBold : ""}`}>
+          Profile
+        </span>
       </Link>
     </aside>
   );

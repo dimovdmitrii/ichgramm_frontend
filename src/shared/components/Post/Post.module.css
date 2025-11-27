@@ -1,0 +1,245 @@
+.post {
+  position: relative;
+  width: 470px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 14px;
+}
+
+.postHeader {
+  position: relative;
+  height: 28px;
+  padding: 2px 4px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatarContainer {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.ringRainbow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36px;
+  height: 36px;
+  z-index: 1;
+}
+
+.avatar {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.userDetails {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 16px;
+}
+
+.username {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000000;
+  line-height: 16px;
+}
+
+.separator {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 16px;
+}
+
+.time {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 16px;
+}
+
+.followButton {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0095f6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 16px;
+  height: 16px;
+  margin-left: auto;
+}
+
+.postImageContainer {
+  position: relative;
+  width: 100%;
+  height: 506px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+  background: #000000;
+  margin-bottom: 4px;
+}
+
+.postImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.postActions {
+  position: relative;
+  height: 34px;
+  padding: 3px 0;
+  margin-bottom: 8px;
+}
+
+.actionIcons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 21px;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+}
+
+.actionButton svg {
+  width: 21px;
+  height: 21px;
+}
+
+.commentIcon {
+  width: 21px;
+  height: 21px;
+}
+
+.likeIcon {
+  width: 21px;
+  height: 21px;
+}
+
+.postContent {
+  position: relative;
+  padding: 0 4px;
+}
+
+.likes {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #000000;
+  line-height: 16px;
+  margin-bottom: 8px;
+  height: 14px;
+}
+
+.caption {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 4px;
+  height: 14px;
+}
+
+.captionUsername {
+  font-weight: 600;
+  color: #000000;
+}
+
+.captionText {
+  font-weight: 400;
+  color: #000000;
+}
+
+.comments {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 4px;
+  height: 14px;
+}
+
+.commentUsername {
+  font-weight: 400;
+  color: #000000;
+}
+
+.commentText {
+  font-weight: 400;
+  color: #000000;
+}
+
+.moreText {
+  font-weight: 400;
+  color: #737373;
+}
+
+.viewComments {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 4px;
+  line-height: 16px;
+  height: 16px;
+}
+
+.addComment {
+  margin-top: 4px;
+  height: 16px;
+}
+
+.commentInput {
+  width: 100%;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #000000;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  line-height: 16px;
+}
+
+.commentInput::placeholder {
+  color: #737373;
+}
+

@@ -5,7 +5,7 @@ const SearchPage = () => {
   return (
     <>
       <Sidebar />
-      <h1>Search Page</h1>
+      
       <Footer />
     </>
   );

@@ -5,7 +5,7 @@ const MessagesPage = () => {
   return (
     <>
       <Sidebar />
-      <h1>Messages Page</h1>
+     
       <Footer />
     </>
   );
