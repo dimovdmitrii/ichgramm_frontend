@@ -1,0 +1,39 @@
+import { Link } from "react-router-dom";
+import styles from "./RegisterPage.module.css";
+import RegisterForm from "../../../modules/RegisterForm/RegisterForm";
+import logoIcon from "../../../assets/icons/ICHGRAM-Text.svg";
+
+const RegisterPage = () => {
+  return (
+    <div className={styles.registerPage}>
+      <div className={styles.section}>
+        <div className={styles.main}>
+          <div className={styles.article}>
+            <div className={styles.formContainer}>
+              <div className={styles.registerCard}>
+                <div className={styles.logoContainer}>
+                  <img
+                    src={logoIcon}
+                    alt="ICHGRAMM Logo"
+                    className={styles.logo}
+                  />
+                </div>
+                <RegisterForm />
+              </div>
+              <div className={styles.loginCard}>
+                <div className={styles.loginContainer}>
+                  <span className={styles.loginText}>Have an account? </span>
+                  <Link to="/" className={styles.loginLink}>
+                    Log in
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterPage;

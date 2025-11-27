@@ -1,0 +1,171 @@
+.form {
+  position: absolute;
+  height: 537px;
+  left: 0;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.iconContainer {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  left: 50%;
+  top: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lockIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.heading {
+  position: absolute;
+  left: 50%;
+  top: 142px;  
+  transform: translateX(-50%);
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-align: center;
+  line-height: 20px;
+}
+
+.instructionsContainer {
+  position: absolute;
+  left: 44px;
+  right: 44px;
+  top: 165px;
+  padding-top: 10px;
+  height: 29px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.instructionsText {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-light);
+  text-align: center;
+  line-height: 18px;
+  margin: 0;
+}
+
+.inputWrapper {
+  position: absolute;
+  left: 44px;
+  right: 44px;
+  top: 210px;
+  height: 40px;
+}
+
+.buttonWrapper {
+  position: absolute;
+  left: 44px;
+  right: 44px;
+  top: 266px;
+  height: 32px;
+}
+
+.dividerContainer {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  top: 364px;
+  left: 0;
+  right: 0;
+}
+
+.divider {
+  position: absolute;
+  height: 1px;
+  background-color: #dbdbdb;
+  top: 0;
+}
+
+.divider:first-of-type {
+  left: 44px;
+  right: 222px;
+}
+
+.divider:last-of-type {
+  left: 222px;
+  right: 44px;
+}
+
+.dividerText {
+  position: absolute;
+  left: 184px;
+  top: 2px;
+  transform: translateY(-50%);
+  font-family: var(--font-family-base);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-light);
+  text-transform: uppercase;
+  width: 20px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createAccountLink {
+  position: absolute;
+  left: 50%;
+  top: 389px;
+  transform: translateX(-50%);
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  text-align: center;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.createAccountLink:hover {
+  text-decoration: underline;
+}
+
+.backToLoginContainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 491px;
+  height: 44px;
+  background: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backToLoginLink {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  text-align: center;
+}
+
+.backToLoginLink:hover {
+  text-decoration: underline;
+}
+

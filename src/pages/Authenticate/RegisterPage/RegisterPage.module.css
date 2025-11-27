@@ -1,0 +1,128 @@
+.registerPage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding: 0 252px 135px 252px;
+  background: var(--color-background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.section {
+  display: flex;
+  width: 1440px;
+  max-height: 900px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.main {
+  position: absolute;
+  background: var(--color-background);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.article {
+  position: absolute;
+  width: 935px;
+  top: 32px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.formContainer {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  top: 81px;
+  transform: translateX(-50%);
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.registerCard {
+  position: absolute;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 1px;
+  width: 100%;
+  height: 554px;
+  top: calc(50% - 118px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoContainer {
+  position: absolute;
+  width: 190px;
+  height: 107px;
+  left: 79px;
+  top: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.loginCard {
+  position: absolute;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 1px;
+  width: 100%;
+  height: 70px;
+  top: calc(50% + 208px);
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.loginText {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: var(--color-text-dark);
+  text-align: center;
+}
+
+.loginLink {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+

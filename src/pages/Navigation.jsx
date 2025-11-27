@@ -1,14 +1,14 @@
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./HomePage/HomePage";
-import LoginPage from "./LoginPage/LoginPage";
-import RegisterPage from "./RegisterPage/RegisterPage";
+import LoginPage from "./Authenticate/LoginPage/LoginPage";
+import RegisterPage from "./Authenticate/RegisterPage/RegisterPage";
 import NotFoundPage from "./NotFoundPage/NotFoundPage";
 import ProfilePage from "./MyProfilePage/MyProfilePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import SearchPage from "./SearchPage/SearchPage";
 import MessagesPage from "./MessagesPage/MessagesPage";
 import NotifivationPage from "./NotificatrionsPage/NotificationPage";
-import ResetPage from "./ResetPage/ResetPage";
+import ResetPage from "./Authenticate/ResetPage/ResetPage";
 import CreatePage from "./CreatePage/CreatePage";
 import EditProfilePage from "./MyProfilePage/EditProfile";
 import MyPostPage from "./MyProfilePage/MyPostPage";
@@ -21,8 +21,8 @@ import OtherProfilePage from "./OtherProfilePage/OtherProfilePage";
 const Navigation = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/home" element={<HomePage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="*" element={<NotFoundPage />} />
       <Route path="/profile" element={<ProfilePage />} />

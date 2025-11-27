@@ -1,14 +1,27 @@
 .custom_input {
-  padding: 11px 8px;
+  display: inline-flex;
+  height: 38px;
+  padding: 0 8px;
+  align-items: center;
   border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  background-color: #fafafa;
   width: 100%;
-  max-width: 258px;
-  font-size: 1.2rem;
-  color: var(--secondary-text-color);
-  margin-bottom: 6px;
+  max-width: 268px;
+  color: #737373;
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36px;
+  box-sizing: border-box;
 }
 
 .custom_input:focus {
   outline: none;
   border: 1px solid #00376b;
+}
+
+.custom_input::placeholder {
+  color: #737373;
 }
