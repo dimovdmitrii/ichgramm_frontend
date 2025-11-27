@@ -1,12 +1,11 @@
-import Button from "../../shared/components/Button/Button";
-import Input from "../../shared/components/Input/Input";
+import Footer from "../../shared/components/Footer/footer";
+import Sidebar from "../../shared/components/Sidebar/Sidebar";
 
 const HomePage = () => {
   return (
     <>
-      <h1>Home Page</h1>
-      <Button />
-      <Input />
+      <Sidebar />
+      <Footer />
     </>
   );
 };

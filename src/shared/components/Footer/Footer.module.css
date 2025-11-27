@@ -1,0 +1,58 @@
+.footer {
+  position: relative;
+  max-width: 1440px;
+  max-height: 158px;
+  background: var(--color-background);
+}
+
+.link {
+  position: absolute;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  text-decoration: none;
+  line-height: 16px;
+}
+
+.homeLink {
+  left: 481px;
+  top: 24px;
+}
+
+.searchLink {
+  left: 560px;
+  top: 24px;
+}
+
+.exploreLink {
+  left: 646px;
+  top: 24px;
+}
+
+.messagesLink {
+  left: 730px;
+  top: 24px;
+}
+
+.notificationsLink {
+  left: 826px;
+  top: 24px;
+}
+
+.createLink {
+  left: 950px;
+  top: 24px;
+}
+
+.copyright {
+  position: absolute;
+  left: 682px;
+  top: 90px;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 16px;
+  margin: 0;
+}
