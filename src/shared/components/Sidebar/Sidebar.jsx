@@ -7,7 +7,7 @@ import mainBoldIcon from "../../../assets/icons/sidebar/main_bold.svg";
 import searchIcon from "../../../assets/icons/sidebar/search.svg";
 import searchBoldIcon from "../../../assets/icons/sidebar/search_Bold.svg";
 import exploreIcon from "../../../assets/icons/sidebar/explore.svg";
-import exploreBoldIcon from "../../../assets/icons/sidebar/explore_Bold.svg";
+import exploreBoldIcon from "../../../assets/icons/sidebar/Explore_Bold.svg";
 import messengerIcon from "../../../assets/icons/sidebar/messenger.svg";
 import messengerBoldIcon from "../../../assets/icons/sidebar/messenger_Bold.svg";
 import notificationsIcon from "../../../assets/icons/sidebar/notifications.svg";
