@@ -32,10 +32,7 @@ const ResetForm = () => {
       {/* Instructions */}
       <div className={styles.instructionsContainer}>
         <p className={styles.instructionsText}>
-          Enter your email, phone, or username and we'll
-        </p>
-        <p className={styles.instructionsText}>
-          send you a link to get back into your account.
+          Enter your email, phone, or username and we'll send you a link to get back into your account.
         </p>
       </div>
 
