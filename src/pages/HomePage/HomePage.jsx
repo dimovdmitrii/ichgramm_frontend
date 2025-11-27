@@ -1,4 +1,5 @@
 import Footer from "../../shared/components/Footer/footer";
+
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import Post from "../../shared/components/Post/Post";
 import styles from "./HomePage.module.css";
