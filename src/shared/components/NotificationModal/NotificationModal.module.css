@@ -1,0 +1,121 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+}
+
+.modal {
+  position: fixed;
+  left: 244px;
+  top: 0;
+  width: 397px;
+  height: 100vh;
+  background: var(--color-background);
+  border-right: 1px solid var(--color-border);
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: 4px 0px 24px 0px rgba(0, 0, 0, 0.15);
+  z-index: 201;
+  overflow-y: auto;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.title {
+  position: absolute;
+  left: 24px;
+  top: 35px;
+  font-family: "Roboto", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 30px;
+  margin: 0;
+}
+
+.subtitle {
+  position: absolute;
+  left: 24px;
+  top: 76px;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 20px;
+  margin: 0;
+}
+
+.notificationsList {
+  position: relative;
+  margin-top: 102px;
+  padding: 0;
+}
+
+.notificationItem {
+  position: relative;
+  height: 60px;
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.notificationText {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.username {
+  font-weight: 600;
+  color: #000000;
+}
+
+.action {
+  font-weight: 400;
+  color: #000000;
+}
+
+.object {
+  font-weight: 400;
+  color: #000000;
+}
+
+.time {
+  font-weight: 400;
+  color: #737373;
+}
+
+.thumbnail {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+

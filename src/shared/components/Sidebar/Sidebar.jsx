@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import styles from "./Sidebar.module.css";
@@ -14,9 +15,11 @@ import notificationsIcon from "../../../assets/icons/sidebar/notifications.svg";
 import notificationBoldIcon from "../../../assets/icons/sidebar/notification_Bold.svg";
 import createIcon from "../../../assets/icons/sidebar/create.svg";
 import profileIcon from "../../../assets/icons/Logo-small.svg";
+import NotificationModal from "../NotificationModal/NotificationModal";
 
 const Sidebar = () => {
   const location = useLocation();
+  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
 
   const navItems = [
     {
@@ -48,6 +51,7 @@ const Sidebar = () => {
       label: "Notification",
       icon: notificationsIcon,
       iconBold: notificationBoldIcon,
+      isModal: true,
     },
     {
       path: "/create",
@@ -64,11 +68,18 @@ const Sidebar = () => {
       </div>
       <nav className={styles.nav}>
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActive = location.pathname === item.path || (item.isModal && isNotificationModalOpen);
+          const handleClick = (e) => {
+            if (item.isModal) {
+              e.preventDefault();
+              setIsNotificationModalOpen(true);
+            }
+          };
           return (
             <Link
               key={item.path}
               to={item.path}
+              onClick={handleClick}
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
               <img
@@ -97,6 +108,10 @@ const Sidebar = () => {
           Profile
         </span>
       </Link>
+      <NotificationModal
+        isOpen={isNotificationModalOpen}
+        onClose={() => setIsNotificationModalOpen(false)}
+      />
     </aside>
   );
 };
