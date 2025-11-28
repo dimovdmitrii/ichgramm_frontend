@@ -17,15 +17,21 @@ import createIcon from "../../../assets/icons/sidebar/create.svg";
 import profileIcon from "../../../assets/icons/Logo-small.svg";
 import NotificationModal from "../../../modules/NotificationModal/NotificationModal";
 import SearchModal from "../../../modules/SearchModal/SearchModal";
+import MessagesListModal from "../../../modules/MessagesListModal/MessagesListModal";
+import ChatModal from "../../../modules/ChatModal/ChatModal";
 
 const Sidebar = () => {
   const location = useLocation();
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null);
 
   useEffect(() => {
     setIsNotificationModalOpen(false);
     setIsSearchModalOpen(false);
+    setIsMessagesModalOpen(false);
+    setSelectedChat(null);
   }, [location.pathname]);
 
   const navItems = [
@@ -53,6 +59,7 @@ const Sidebar = () => {
       label: "Messages",
       icon: messengerIcon,
       iconBold: messengerBoldIcon,
+      isModal: true,
     },
     {
       path: "/notifications",
@@ -82,6 +89,8 @@ const Sidebar = () => {
                 ? isNotificationModalOpen
                 : item.path === "/search"
                 ? isSearchModalOpen
+                : item.path === "/messages"
+                ? isMessagesModalOpen
                 : false
               : location.pathname === item.path;
           const handleClick = () => {
@@ -89,9 +98,20 @@ const Sidebar = () => {
               if (item.path === "/notifications") {
                 setIsNotificationModalOpen((prev) => !prev);
                 setIsSearchModalOpen(false);
+                setIsMessagesModalOpen(false);
+                setSelectedChat(null);
               } else if (item.path === "/search") {
                 setIsSearchModalOpen((prev) => !prev);
                 setIsNotificationModalOpen(false);
+                setIsMessagesModalOpen(false);
+                setSelectedChat(null);
+              } else if (item.path === "/messages") {
+                setIsMessagesModalOpen((prev) => !prev);
+                setIsNotificationModalOpen(false);
+                setIsSearchModalOpen(false);
+                if (!isMessagesModalOpen) {
+                  setSelectedChat(null);
+                }
               }
             }
           };
@@ -126,6 +146,8 @@ const Sidebar = () => {
               onClick={() => {
                 setIsNotificationModalOpen(false);
                 setIsSearchModalOpen(false);
+                setIsMessagesModalOpen(false);
+                setSelectedChat(null);
               }}
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
@@ -150,6 +172,8 @@ const Sidebar = () => {
         onClick={() => {
           setIsNotificationModalOpen(false);
           setIsSearchModalOpen(false);
+          setIsMessagesModalOpen(false);
+          setSelectedChat(null);
         }}
         className={styles.profileItem}
       >
@@ -169,6 +193,23 @@ const Sidebar = () => {
       <SearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}
+      />
+      <MessagesListModal
+        isOpen={isMessagesModalOpen}
+        onClose={() => {
+          setIsMessagesModalOpen(false);
+          setSelectedChat(null);
+        }}
+        onSelectChat={(chat) => setSelectedChat(chat)}
+        selectedChatId={selectedChat?.id}
+      />
+      <ChatModal
+        isOpen={isMessagesModalOpen && !!selectedChat}
+        onClose={() => {
+          setSelectedChat(null);
+          setIsMessagesModalOpen(false);
+        }}
+        chat={selectedChat}
       />
     </aside>
   );

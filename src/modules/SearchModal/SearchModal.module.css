@@ -16,7 +16,7 @@
   height: calc(100vh - 158px);
   background: var(--color-background);
   border-right: 1px solid var(--color-border);
-  border-top-right-radius: 16px;
+  border-top-right-radius: 0;
   border-bottom: none;
   border-bottom-right-radius: 0;
   border-left: 1px solid rgba(214, 211, 211, 0.8);
