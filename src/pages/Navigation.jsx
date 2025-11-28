@@ -8,7 +8,6 @@ import ProfilePage from "./MyProfilePage/MyProfilePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import SearchPage from "./SearchPage/SearchPage";
 import MessagesPage from "./MessagesPage/MessagesPage";
-import NotifivationPage from "./NotificatrionsPage/NotificationPage";
 import ResetPage from "./Authenticate/ResetPage/ResetPage";
 import CreatePage from "./CreatePage/CreatePage";
 import EditProfilePage from "./MyProfilePage/EditProfile";
@@ -34,7 +33,6 @@ const Navigation = () => {
       <Route path="/explore" element={<ExplorePage />} />
       <Route path="/search" element={<SearchPage />} />
       <Route path="/messages" element={<MessagesPage />} />
-      <Route path="/notifications" element={<NotifivationPage />} />
       <Route path="/reset" element={<ResetPage />} />
       <Route path="/create" element={<CreatePage />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />

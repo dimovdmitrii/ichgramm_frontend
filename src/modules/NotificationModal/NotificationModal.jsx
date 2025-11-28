@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styles from "./NotificationModal.module.css";
-import sashaaAvatar from "../../../assets/Images/sashaa.jpg";
-import roadThumbnail from "../../../assets/Images/roadSmall.png";
+import sashaaAvatar from "../../assets/Images/sashaa.jpg";
+import roadThumbnail from "../../assets/Images/roadSmall.png";
 
 const NotificationModal = ({ isOpen, onClose }) => {
   useEffect(() => {
@@ -75,4 +75,3 @@ const NotificationModal = ({ isOpen, onClose }) => {
 };
 
 export default NotificationModal;
-
