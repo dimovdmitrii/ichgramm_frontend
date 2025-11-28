@@ -6,7 +6,6 @@ import RegisterPage from "./Authenticate/RegisterPage/RegisterPage";
 import NotFoundPage from "./NotFoundPage/NotFoundPage";
 import ProfilePage from "./MyProfilePage/MyProfilePage";
 import ExplorePage from "./ExplorePage/ExplorePage";
-import SearchPage from "./SearchPage/SearchPage";
 import MessagesPage from "./MessagesPage/MessagesPage";
 import ResetPage from "./Authenticate/ResetPage/ResetPage";
 import CreatePage from "./CreatePage/CreatePage";
@@ -31,7 +30,6 @@ const Navigation = () => {
       <Route path="*" element={<NotFoundPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/explore" element={<ExplorePage />} />
-      <Route path="/search" element={<SearchPage />} />
       <Route path="/messages" element={<MessagesPage />} />
       <Route path="/reset" element={<ResetPage />} />
       <Route path="/create" element={<CreatePage />} />

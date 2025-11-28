@@ -16,14 +16,16 @@ import notificationBoldIcon from "../../../assets/icons/sidebar/notification_Bol
 import createIcon from "../../../assets/icons/sidebar/create.svg";
 import profileIcon from "../../../assets/icons/Logo-small.svg";
 import NotificationModal from "../../../modules/NotificationModal/NotificationModal";
+import SearchModal from "../../../modules/SearchModal/SearchModal";
+
 const Sidebar = () => {
   const location = useLocation();
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   useEffect(() => {
-    if (location.pathname !== "/notifications") {
-      setIsNotificationModalOpen(false);
-    }
+    setIsNotificationModalOpen(false);
+    setIsSearchModalOpen(false);
   }, [location.pathname]);
 
   const navItems = [
@@ -38,6 +40,7 @@ const Sidebar = () => {
       label: "Search",
       icon: searchIcon,
       iconBold: searchBoldIcon,
+      isModal: true,
     },
     {
       path: "/explore",
@@ -74,19 +77,56 @@ const Sidebar = () => {
       <nav className={styles.nav}>
         {navItems.map((item) => {
           const isActive =
-            location.pathname === item.path ||
-            (item.isModal && isNotificationModalOpen);
-          const handleClick = (e) => {
+            item.isModal
+              ? item.path === "/notifications"
+                ? isNotificationModalOpen
+                : item.path === "/search"
+                ? isSearchModalOpen
+                : false
+              : location.pathname === item.path;
+          const handleClick = () => {
             if (item.isModal) {
-              e.preventDefault();
-              setIsNotificationModalOpen((prev) => !prev);
+              if (item.path === "/notifications") {
+                setIsNotificationModalOpen((prev) => !prev);
+                setIsSearchModalOpen(false);
+              } else if (item.path === "/search") {
+                setIsSearchModalOpen((prev) => !prev);
+                setIsNotificationModalOpen(false);
+              }
             }
           };
+          
+          if (item.isModal) {
+            return (
+              <button
+                key={item.path}
+                onClick={handleClick}
+                className={`${styles.navItem} ${isActive ? styles.active : ""}`}
+              >
+                <img
+                  src={isActive ? item.iconBold : item.icon}
+                  alt={item.label}
+                  className={styles.icon}
+                />
+                <span
+                  className={`${styles.label} ${
+                    isActive ? styles.labelBold : ""
+                  }`}
+                >
+                  {item.label}
+                </span>
+              </button>
+            );
+          }
+          
           return (
             <Link
               key={item.path}
               to={item.path}
-              onClick={handleClick}
+              onClick={() => {
+                setIsNotificationModalOpen(false);
+                setIsSearchModalOpen(false);
+              }}
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
               <img
@@ -105,7 +145,14 @@ const Sidebar = () => {
           );
         })}
       </nav>
-      <Link to="/profile" className={styles.profileItem}>
+      <Link
+        to="/profile"
+        onClick={() => {
+          setIsNotificationModalOpen(false);
+          setIsSearchModalOpen(false);
+        }}
+        className={styles.profileItem}
+      >
         <img src={profileIcon} alt="Profile" className={styles.avatarIcon} />
         <span
           className={`${styles.label} ${
@@ -118,6 +165,10 @@ const Sidebar = () => {
       <NotificationModal
         isOpen={isNotificationModalOpen}
         onClose={() => setIsNotificationModalOpen(false)}
+      />
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
       />
     </aside>
   );
