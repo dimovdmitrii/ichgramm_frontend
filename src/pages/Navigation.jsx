@@ -18,6 +18,10 @@ import EditPostPage from "./MyProfilePage/EditPostPage";
 import MyProfilePage from "./MyProfilePage/MyProfilePage";
 import OtherPostPage from "./OtherProfilePage/OtherPostPage";
 import OtherProfilePage from "./OtherProfilePage/OtherProfilePage";
+import PrivacyPolicy from "./PrivacyTerms/PrivacyPolicy/PrivacyPolicy";
+import Terms from "./PrivacyTerms/Terms/Terms";
+import CookiesPolicy from "./PrivacyTerms/CookiesPolicy/CookiesPolicy";
+import LearnMore from "./PrivacyTerms/LearnMore/LearnMore";
 
 const Navigation = () => {
   return (
@@ -40,6 +44,10 @@ const Navigation = () => {
       <Route path="/my-profile" element={<MyProfilePage />} />
       <Route path="/other-posts" element={<OtherPostPage />} />
       <Route path="/other-profile" element={<OtherProfilePage />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/cookies-policy" element={<CookiesPolicy />} />
+      <Route path="/learn-more" element={<LearnMore />} />
     </Routes>
   );
 };
