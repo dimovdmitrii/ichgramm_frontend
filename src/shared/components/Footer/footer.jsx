@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import styles from "./Footer.module.css";
 
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className={styles.footer}>
       <div className={styles.linksContainer}>
@@ -24,7 +26,7 @@ const Footer = () => {
           Create
         </Link>
       </div>
-      <p className={styles.copyright}>© 2026 ICHgram</p>
+      <p className={styles.copyright}>© {currentYear} ICHgram</p>
     </footer>
   );
 };

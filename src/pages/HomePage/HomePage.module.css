@@ -33,7 +33,7 @@
 .endIndicator {
   position: relative;
   width: 100%;
-  max-width: 980px;
+  max-width: 975px;
   height: 216px;
   display: flex;
   flex-direction: column;
