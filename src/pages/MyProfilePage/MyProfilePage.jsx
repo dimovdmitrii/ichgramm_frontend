@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
+import MyPostModal from "../../modules/MyPostModal/MyPostModal";
 import styles from "./MyProfilePage.module.css";
 import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import ringRainbow from "../../assets/Images/ring-rainbow.png";
@@ -13,10 +15,27 @@ import profile5 from "../../assets/Images/UsersProfile/Profile_Post5.png";
 import profile6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
 
 const MyProfilePage = () => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const posts = [profile1, profile2, profile3, profile4, profile5, profile6];
   const fullBio = "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
   const shortBio = "БЕСПЛАТНЫЙ";
+
+  const handleEditProfile = () => {
+    navigate("/edit-profile");
+  };
+
+  const handlePostClick = (index) => {
+    setSelectedPostIndex(index);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedPostIndex(null);
+  };
 
   return (
     <>
@@ -42,7 +61,9 @@ const MyProfilePage = () => {
               <div className={styles.profileInfo}>
                 <div className={styles.usernameSection}>
                   <h2 className={styles.username}>itcareerhub</h2>
-                  <button className={styles.editButton}>Edit profile</button>
+                  <button className={styles.editButton} onClick={handleEditProfile}>
+                    Edit profile
+                  </button>
                 </div>
                 <div className={styles.stats}>
                   <div className={styles.statItem}>
@@ -100,7 +121,11 @@ const MyProfilePage = () => {
             </div>
             <div className={styles.postsGrid}>
               {posts.map((post, index) => (
-                <div key={index} className={styles.postItem}>
+                <div
+                  key={index}
+                  className={styles.postItem}
+                  onClick={() => handlePostClick(index)}
+                >
                   <img src={post} alt={`Post ${index + 1}`} className={styles.postImage} />
                 </div>
               ))}
@@ -109,6 +134,11 @@ const MyProfilePage = () => {
         </div>
         <Footer />
       </div>
+      <MyPostModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        postIndex={selectedPostIndex}
+      />
     </>
   );
 };

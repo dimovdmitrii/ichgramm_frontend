@@ -1,0 +1,265 @@
+.pageWrapper {
+  position: relative;
+  width: calc(100% - 244px);
+  min-height: 100vh;
+  background: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  margin-left: 244px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.content {
+  flex: 1;
+  padding: 48px 0 0 167px;
+  min-height: 0;
+  border-left: 1px solid var(--color-border);
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 610px;
+  padding: 0;
+  /* margin: 0 auto; */
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 25px;
+  margin: 0 0 32px 0;
+}
+
+.profileSection {
+  position: relative;
+  background: #efefef;
+  border-radius: 20px;
+  padding: 16px 16px 8px 16px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  min-height: 88px;
+  box-sizing: border-box;
+}
+
+.avatarContainer {
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 56px;
+  height: 56px;
+}
+
+.ringRainbow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56px;
+  height: 56px;
+  z-index: 1;
+}
+
+.avatar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  object-fit: cover;
+  z-index: 2;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.profileInfo {
+  max-width: 265px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 0;
+}
+
+.profileName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 20px;
+  margin: 0;
+}
+
+.profileBio {
+  font-size: 14px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 18px;
+  margin: 0;
+}
+
+.newPhotoButton {
+  background: #0095f6;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7.5px 15.8px 8px 16px;
+  margin-left: auto;
+  margin-top: 12px;
+  margin-right: 0;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  height: 32px;
+  width: auto;
+  min-width: 120px;
+  box-sizing: border-box;
+}
+
+.newPhotoButton:hover {
+  background: #0085e5;
+}
+
+.formSection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  line-height: 20px;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+  background: var(--color-background);
+  outline: none;
+}
+
+.input:focus {
+  border-color: #0095f6;
+}
+
+.websiteInputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-background);
+}
+
+.websiteInputContainer:focus-within {
+  border-color: #0095f6;
+}
+
+.linkIcon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.websiteInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #00376b;
+  background: transparent;
+}
+
+.websiteInput::placeholder {
+  color: #737373;
+}
+
+.textareaContainer {
+  position: relative;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 62px;
+  padding: 21px;
+  border: 1px solid #dbdfe4;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+  line-height: 18px;
+  background: var(--color-background);
+  outline: none;
+  resize: vertical;
+  font-family: var(--font-family-base);
+}
+
+.textarea:focus {
+  border-color: #0095f6;
+}
+
+.charCount {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #737373;
+  line-height: 16px;
+}
+
+.saveButton {
+  width: 268px;
+  height: 32px;
+  background: #0095f6;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.saveButton:hover {
+  background: #0085e5;
+}
+

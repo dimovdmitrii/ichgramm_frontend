@@ -234,6 +234,7 @@
   background: #efefef;
   border-radius: 0;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .postImage {

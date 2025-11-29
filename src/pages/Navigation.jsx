@@ -5,6 +5,7 @@ import LoginPage from "./Authenticate/LoginPage/LoginPage";
 import RegisterPage from "./Authenticate/RegisterPage/RegisterPage";
 import NotFoundPage from "./NotFoundPage/NotFoundPage";
 import MyProfilePage from "./MyProfilePage/MyProfilePage";
+import MyProfileEdit from "./EditProfile/MyProfileEdit";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import ResetPage from "./Authenticate/ResetPage/ResetPage";
 import CreatePage from "./CreatePage/CreatePage";
@@ -24,6 +25,7 @@ const Navigation = () => {
       <Route path="*" element={<NotFoundPage />} />
       <Route path="/profile" element={<MyProfilePage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
+      <Route path="/edit-profile" element={<MyProfileEdit />} />
       <Route path="/explore" element={<ExplorePage />} />      
       <Route path="/reset" element={<ResetPage />} />
       <Route path="/create" element={<CreatePage />} />
