@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./RegisterPage.module.css";
 import RegisterForm from "../../../modules/RegisterForm/RegisterForm";
-import logoIcon from "../../../assets/icons/ICHGRAM-Text.svg";
+import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 
 const RegisterPage = () => {
   return (

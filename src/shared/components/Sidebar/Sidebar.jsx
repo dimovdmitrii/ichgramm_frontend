@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import styles from "./Sidebar.module.css";
-import logoIcon from "../../../assets/icons/ICHGRAM-Text.svg";
+import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 import mainIcon from "../../../assets/icons/sidebar/main.svg";
 import mainBoldIcon from "../../../assets/icons/sidebar/main_bold.svg";
 import searchIcon from "../../../assets/icons/sidebar/search.svg";
@@ -12,9 +12,9 @@ import exploreBoldIcon from "../../../assets/icons/sidebar/Explore_Bold.svg";
 import messengerIcon from "../../../assets/icons/sidebar/messenger.svg";
 import messengerBoldIcon from "../../../assets/icons/sidebar/messenger_Bold.svg";
 import notificationsIcon from "../../../assets/icons/sidebar/notifications.svg";
-import notificationBoldIcon from "../../../assets/icons/sidebar/notification_Bold.svg";
+import notificationBoldIcon from "../../../assets/icons/sidebar/Heart_Bold.svg";
 import createIcon from "../../../assets/icons/sidebar/create.svg";
-import profileIcon from "../../../assets/icons/Logo-small.svg";
+import profileIcon from "../../../assets/icons/MyProfile_Logo.svg";
 import NotificationModal from "../../../modules/NotificationModal/NotificationModal";
 import SearchModal from "../../../modules/SearchModal/SearchModal";
 import MessagesListModal from "../../../modules/MessagesListModal/MessagesListModal";
@@ -116,6 +116,8 @@ const Sidebar = () => {
             }
           };
           
+          const iconSrc = isActive ? item.iconBold : item.icon;
+
           if (item.isModal) {
             return (
               <button
@@ -124,7 +126,7 @@ const Sidebar = () => {
                 className={`${styles.navItem} ${isActive ? styles.active : ""}`}
               >
                 <img
-                  src={isActive ? item.iconBold : item.icon}
+                  src={iconSrc}
                   alt={item.label}
                   className={styles.icon}
                 />
@@ -152,7 +154,7 @@ const Sidebar = () => {
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
               <img
-                src={isActive ? item.iconBold : item.icon}
+                src={iconSrc}
                 alt={item.label}
                 className={styles.icon}
               />

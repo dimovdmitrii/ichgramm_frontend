@@ -56,7 +56,6 @@
 }
 
 .username {
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: #000000;
@@ -64,7 +63,6 @@
 }
 
 .separator {
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: #737373;
@@ -72,7 +70,6 @@
 }
 
 .time {
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: #737373;
@@ -80,7 +77,7 @@
 }
 
 .followButton {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family-base);
   font-size: 12px;
   font-weight: 600;
   color: #0095f6;
@@ -155,7 +152,6 @@
 }
 
 .likes {
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: #000000;
@@ -165,7 +161,6 @@
 }
 
 .caption {
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
   margin-bottom: 4px;
@@ -183,7 +178,6 @@
 }
 
 .comments {
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   line-height: 16px;
   margin-bottom: 4px;
@@ -206,7 +200,7 @@
 }
 
 .viewComments {
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family-base);
   font-size: 12px;
   font-weight: 400;
   color: #737373;
@@ -221,7 +215,6 @@
 
 .commentInput {
   width: 100%;
-  font-family: "Roboto", sans-serif;
   font-size: 12px;
   font-weight: 400;
   color: #000000;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./ChatModal.module.css";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
 import nikitaAvatar from "../../assets/Images/nikita.jpg";
-import logoSmall from "../../assets/icons/Logo-small.svg";
+import logoSmall from "../../assets/icons/MyProfile_Logo.svg";
 
 const ChatModal = ({ isOpen, onClose, chat }) => {
   const [message, setMessage] = useState("");

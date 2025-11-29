@@ -6,7 +6,7 @@ import styles from "./HomePage.module.css";
 import endIcon from "../../assets/Images/illo-confirm-refresh.png";
 import yablokoImage from "../../assets/Images/yabloko-500x.jpg";
 import mostInkovImage from "../../assets/Images/most_inkov-500x.jpg";
-import ispolzovalImage from "../../assets/Images/ispolzoval-500x.jpg";
+import ispolzovalImage from "../../assets/Images/pn-Garajonay.png";
 import defaultPostImage from "../../assets/Images/Background+Border.png";
 
 const HomePage = () => {

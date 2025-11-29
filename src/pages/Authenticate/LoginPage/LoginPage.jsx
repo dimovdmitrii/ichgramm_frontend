@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import LoginForm from "../../../modules/LoginForm/LoginForm";
 import imgBackground from "../../../assets/Images/Main_Background.png";
-import logoIcon from "../../../assets/icons/ICHGRAM-Text.svg";
+import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 
 const LoginPage = () => {
   return (

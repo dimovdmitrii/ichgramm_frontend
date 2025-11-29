@@ -15,7 +15,6 @@
 }
 
 .title {
-  font-family: "Roboto", sans-serif;
   font-size: 32px;
   font-weight: 700;
   color: #000000;
@@ -30,7 +29,6 @@
 }
 
 .paragraph {
-  font-family: "Roboto", sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: #000000;
@@ -54,7 +52,7 @@
   border-radius: 8px;
   background-color: #0095f6;
   color: #ffffff;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family-base);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -78,7 +76,7 @@
   border-radius: 8px;
   background-color: var(--color-background);
   color: #000000;
-  font-family: "Roboto", sans-serif;
+  font-family: var(--font-family-base);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;

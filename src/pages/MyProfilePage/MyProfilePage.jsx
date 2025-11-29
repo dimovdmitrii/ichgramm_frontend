@@ -1,16 +1,116 @@
+import { useState } from "react";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import styles from "./MyProfilePage.module.css";
+import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
+import ringRainbow from "../../assets/Images/ring-rainbow.png";
+import linkIcon from "../../assets/icons/Link_Icon.svg";
+import profile1 from "../../assets/Images/UsersProfile/Profile_Post1.png";
+import profile2 from "../../assets/Images/UsersProfile/Profile_Post2.png";
+import profile3 from "../../assets/Images/UsersProfile/Profile_Post3.png";
+import profile4 from "../../assets/Images/UsersProfile/Profile_Post4.png";
+import profile5 from "../../assets/Images/UsersProfile/Profile_Post5.png";
+import profile6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
 
 const MyProfilePage = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const posts = [profile1, profile2, profile3, profile4, profile5, profile6];
+  const fullBio = "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
+  const shortBio = "БЕСПЛАТНЫЙ";
+
   return (
     <>
       <Sidebar />
       <div className={styles.pageWrapper}>
-        <div className={styles.content}></div>
+        <div className={styles.content}>
+          <div className={styles.container}>
+            <div className={styles.header}>
+              <div className={styles.avatarContainer}>
+                <div className={styles.avatarWrapper}>
+                  <img
+                    src={ringRainbow}
+                    alt="Rainbow ring"
+                    className={styles.ringRainbow}
+                  />
+                  <img
+                    src={profileLogo}
+                    alt="Profile"
+                    className={styles.avatar}
+                  />
+                </div>
+              </div>
+              <div className={styles.profileInfo}>
+                <div className={styles.usernameSection}>
+                  <h2 className={styles.username}>itcareerhub</h2>
+                  <button className={styles.editButton}>Edit profile</button>
+                </div>
+                <div className={styles.stats}>
+                  <div className={styles.statItem}>
+                    <span>129 posts</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span>9 993 followers</span>
+                  </div>
+                  <div className={styles.statItem}>
+                    <span>59 following</span>
+                  </div>
+                </div>
+                <div className={styles.bioSection}>
+                  <div className={styles.bio}>
+                    <p>• Гарантия помощи с трудоустройством в ведущие IT-компании</p>
+                    <p>• Выпускники зарабатывают от 45к евро</p>
+                    <p>
+                      {isExpanded ? fullBio : shortBio}
+                      {!isExpanded && (
+                        <span className={styles.moreLink}>
+                          {" ... "}
+                          <button
+                            className={styles.moreButton}
+                            onClick={() => setIsExpanded(true)}
+                          >
+                            more
+                          </button>
+                        </span>
+                      )}
+                      {isExpanded && (
+                        <span className={styles.moreLink}>
+                          {" "}
+                          <button
+                            className={styles.moreButton}
+                            onClick={() => setIsExpanded(false)}
+                          >
+                            less
+                          </button>
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <div className={styles.linkContainer}>
+                    <img
+                      src={linkIcon}
+                      alt="Link icon"
+                      className={styles.linkIcon}
+                    />
+                    <a href="https://bit.ly/3rpiIbh" className={styles.externalLink}>
+                      bit.ly/3rpiIbh
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.postsGrid}>
+              {posts.map((post, index) => (
+                <div key={index} className={styles.postItem}>
+                  <img src={post} alt={`Post ${index + 1}`} className={styles.postImage} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
         <Footer />
       </div>
     </>
   );
 };
+
 export default MyProfilePage;
