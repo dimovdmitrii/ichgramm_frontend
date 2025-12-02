@@ -76,7 +76,16 @@
   border-radius: 28px;
   object-fit: cover;
   z-index: 2;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 56px;
+  height: 56px;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .profileInfo {
