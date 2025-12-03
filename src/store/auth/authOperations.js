@@ -9,7 +9,9 @@ export const registerUser = createAsyncThunk(
       const data = await authApi.register(payload);
       return data;
     } catch (error) {
-      return rejectWithValue(error?.response?.data?.message || error?.message);
+      return rejectWithValue({
+        email: error?.response?.data?.message || error?.message,
+      });
     }
   }
 );

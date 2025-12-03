@@ -32,7 +32,9 @@
   position: absolute;
   left: 40px;
   right: 40px;
-  height: 38px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .emailInput {
@@ -87,6 +89,16 @@
 
 .legalLink:hover {
   text-decoration: underline;
+}
+
+.errorText {
+  color: #ed4956;
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: 400;
+  margin: 4px 0 0 0;
+  padding: 0;
+  line-height: 16px;
 }
 
 .buttonWrapper {

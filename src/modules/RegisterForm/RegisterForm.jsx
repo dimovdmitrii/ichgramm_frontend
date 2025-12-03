@@ -5,14 +5,28 @@ import Input from "../../shared/components/Input/Input";
 import Button from "../../shared/components/Button/Button";
 import styles from "./RegisterForm.module.css";
 
-const RegisterForm = ({ submitForm, user }) => {
-  const { register, handleSubmit, reset } = useForm();
+const RegisterForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
-    if (user) {
+    if (requestErrors) {
+      for (const key in requestErrors) {
+        setError(key, { message: requestErrors[key] });
+      }
+    }
+  }, [requestErrors, setError]);
+
+  useEffect(() => {
+    if (isSubmitSuccess) {
       reset();
     }
-  }, [user, reset]);
+  }, [isSubmitSuccess, reset]);
 
   const onSubmit = (values) => {
     if (submitForm) {
@@ -31,12 +45,21 @@ const RegisterForm = ({ submitForm, user }) => {
       {/* Input fields */}
       <div className={`${styles.inputWrapper} ${styles.emailInput}`}>
         <Input type="email" placeholder="Email" {...register("email")} />
+        {errors.email && (
+          <p className={styles.errorText}>{errors.email.message}</p>
+        )}
       </div>
       <div className={`${styles.inputWrapper} ${styles.fullNameInput}`}>
         <Input type="text" placeholder="Full Name" {...register("fullName")} />
+        {errors.fullName && (
+          <p className={styles.errorText}>{errors.fullName.message}</p>
+        )}
       </div>
       <div className={`${styles.inputWrapper} ${styles.usernameInput}`}>
         <Input type="text" placeholder="Username" {...register("username")} />
+        {errors.username && (
+          <p className={styles.errorText}>{errors.username.message}</p>
+        )}
       </div>
       <div className={`${styles.inputWrapper} ${styles.passwordInput}`}>
         <Input
@@ -44,6 +67,9 @@ const RegisterForm = ({ submitForm, user }) => {
           placeholder="Password"
           {...register("password")}
         />
+        {errors.password && (
+          <p className={styles.errorText}>{errors.password.message}</p>
+        )}
       </div>
 
       {/* Legal text */}

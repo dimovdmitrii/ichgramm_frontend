@@ -8,6 +8,7 @@ const initialState = {
   error: null,
   accessToken: null,
   refreshToken: null,
+  isRegisterSuccess: false,
 };
 
 const authSlice = createSlice({
@@ -19,11 +20,9 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(registerUser.fulfilled, (state, { payload }) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loading = false;
-        state.accessToken = payload.accessTokenss;
-        state.refreshToken = payload.refreshToken;
-        state.user = payload.user;
+        state.isRegisterSuccess = true;
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
         state.loading = false;
