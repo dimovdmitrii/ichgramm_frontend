@@ -23,7 +23,6 @@ const Register = () => {
         submitForm={noRegister}
       />
       {loading && <p>Register request...</p>}
-      {error && <p style={{ color: "red" }}>{error.email}</p>}
     </div>
   );
 };

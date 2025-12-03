@@ -26,7 +26,7 @@ const Navigation = () => {
       <Route path="/profile" element={<MyProfilePage />} />
       <Route path="/my-profile" element={<MyProfilePage />} />
       <Route path="/edit-profile" element={<MyProfileEdit />} />
-      <Route path="/explore" element={<ExplorePage />} />      
+      <Route path="/explore" element={<ExplorePage />} />
       <Route path="/reset" element={<ResetPage />} />
       <Route path="/create" element={<CreatePage />} />
       <Route path="/other-posts" element={<OtherPostPage />} />
