@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./RegisterPage.module.css";
-import RegisterForm from "../../../modules/RegisterForm/RegisterForm";
+import Register from "../../../modules/RegisterForm/Register";
 import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 
 const RegisterPage = () => {
@@ -18,7 +18,7 @@ const RegisterPage = () => {
                     className={styles.logo}
                   />
                 </div>
-                <RegisterForm />
+                <Register />
               </div>
               <div className={styles.loginCard}>
                 <div className={styles.loginContainer}>

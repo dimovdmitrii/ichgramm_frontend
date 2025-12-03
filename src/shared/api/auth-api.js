@@ -5,6 +5,6 @@ const authInstance = axios.create({
 });
 
 export const register = async (payload) => {
-  const { data } = await authInstance.post("/auth//register", payload);
+  const { data } = await authInstance.post("/auth/register", payload);
   return data;
 };

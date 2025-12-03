@@ -1,50 +1,42 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Input from "../../shared/components/Input/Input";
 import Button from "../../shared/components/Button/Button";
 import styles from "./RegisterForm.module.css";
 
-const RegisterForm = () => {
-  const {
-    register,
-    handleSubmit,
-  } = useForm();
+const RegisterForm = ({ submitForm, user }) => {
+  const { register, handleSubmit, reset } = useForm();
+
+  useEffect(() => {
+    if (user) {
+      reset();
+    }
+  }, [user, reset]);
 
   const onSubmit = (values) => {
-    console.log(values);
+    if (submitForm) {
+      submitForm(values);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       {/* Tagline */}
       <div className={styles.taglineContainer}>
-        <p className={styles.taglineText}>
-          Sign up to see photos and videos
-        </p>
+        <p className={styles.taglineText}>Sign up to see photos and videos</p>
         <p className={styles.taglineText}>from your friends.</p>
       </div>
 
       {/* Input fields */}
       <div className={`${styles.inputWrapper} ${styles.emailInput}`}>
-        <Input
-          type="email"
-          placeholder="Email"
-          {...register("email")}
-        />
+        <Input type="email" placeholder="Email" {...register("email")} />
       </div>
       <div className={`${styles.inputWrapper} ${styles.fullNameInput}`}>
-        <Input
-          type="text"
-          placeholder="Full Name"
-          {...register("fullName")}
-        />
+        <Input type="text" placeholder="Full Name" {...register("fullName")} />
       </div>
       <div className={`${styles.inputWrapper} ${styles.usernameInput}`}>
-        <Input
-          type="text"
-          placeholder="Username"
-          {...register("username")}
-        />
+        <Input type="text" placeholder="Username" {...register("username")} />
       </div>
       <div className={`${styles.inputWrapper} ${styles.passwordInput}`}>
         <Input
@@ -58,8 +50,11 @@ const RegisterForm = () => {
       <div className={styles.legalContainer}>
         <div className={styles.legalTextRow}>
           <p className={styles.legalText}>
-            People who use our service may have uploaded your contact information to Instagram.{" "}
-            <Link to="/learn-more" className={styles.legalLink}>Learn More</Link>
+            People who use our service may have uploaded your contact
+            information to Instagram.{" "}
+            <Link to="/learn-more" className={styles.legalLink}>
+              Learn More
+            </Link>
           </p>
         </div>
         <p className={styles.legalText}>
@@ -88,4 +83,3 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
-
