@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import styles from "./MyProfileEdit.module.css";
@@ -7,9 +8,11 @@ import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import ringRainbow from "../../assets/Images/ring-rainbow.png";
 import linkIcon from "../../assets/icons/Link_Icon.svg";
 import borderIcon from "../../assets/icons/Border.svg";
+import { logoutUser } from "../../store/auth/authOperations";
 
 const MyProfileEdit = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("ichschool");
   const [website, setWebsite] = useState("bit.ly/3rpiIbh");
   const [about, setAbout] = useState(
@@ -21,6 +24,17 @@ const MyProfileEdit = () => {
   const handleSave = () => {
     // Здесь будет логика сохранения
     navigate("/my-profile");
+  };
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser()).unwrap();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Даже если произошла ошибка, очищаем состояние и редиректим
+      navigate("/");
+    }
   };
 
   return (
@@ -103,10 +117,14 @@ const MyProfileEdit = () => {
                   </div>
                 </div>
               </div>
-
-              <button className={styles.saveButton} onClick={handleSave}>
-                Save
-              </button>
+              <div className={styles.buttonDiv}>
+                <button className={styles.saveButton} onClick={handleSave}>
+                  Save
+                </button>
+                <button className={styles.logoutButton} onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -117,4 +135,3 @@ const MyProfileEdit = () => {
 };
 
 export default MyProfileEdit;
-

@@ -75,7 +75,7 @@
 
 .profileItem {
   position: absolute;
-  left: 25px;
+  left: 22px;
   top: 432px;
   display: flex;
   align-items: center;
@@ -92,9 +92,8 @@
 }
 
 .avatarIcon {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   margin-right: 12px;
   flex-shrink: 0;
 }
-

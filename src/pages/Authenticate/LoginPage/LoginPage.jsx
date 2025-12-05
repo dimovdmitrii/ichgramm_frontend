@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./LoginPage.module.css";
-import LoginForm from "../../../modules/LoginForm/LoginForm";
+import Login from "../../../modules/LoginForm/Login";
 import imgBackground from "../../../assets/Images/Main_Background.png";
 import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 
@@ -24,7 +24,7 @@ const LoginPage = () => {
                     className={styles.logo}
                   />
                 </div>
-                <LoginForm />
+                <Login />
               </div>
               <div className={styles.signupCard}>
                 <div className={styles.signupContainer}>
