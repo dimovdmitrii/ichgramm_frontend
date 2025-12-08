@@ -9,6 +9,7 @@ import ringRainbow from "../../assets/Images/ring-rainbow.png";
 import linkIcon from "../../assets/icons/Link_Icon.svg";
 import borderIcon from "../../assets/icons/Border.svg";
 import { logoutUser } from "../../store/auth/authOperations";
+import { persistor } from "../../store/store";
 
 const MyProfileEdit = () => {
   const navigate = useNavigate();
@@ -29,10 +30,11 @@ const MyProfileEdit = () => {
   const handleLogout = async () => {
     try {
       await dispatch(logoutUser()).unwrap();
+      await persistor.purge();
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
-      // Даже если произошла ошибка, очищаем состояние и редиректим
+      await persistor.purge();
       navigate("/");
     }
   };

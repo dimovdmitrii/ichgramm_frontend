@@ -3,10 +3,16 @@ import { Navigate } from "react-router-dom";
 
 import RegisterForm from "./RegisterForm";
 import { registerUser } from "../../store/auth/authOperations";
-import { selectAuthRequest } from "../../store/auth/authSelectors";
+import {
+  selectLoading,
+  selectError,
+  selectIsRegisterSuccess,
+} from "../../store/auth/authSelectors";
 
 const Register = () => {
-  const { error, loading, isRegisterSuccess } = useSelector(selectAuthRequest);
+  const error = useSelector(selectError);
+  const loading = useSelector(selectLoading);
+  const isRegisterSuccess = useSelector(selectIsRegisterSuccess);
 
   const dispatch = useDispatch();
   const noRegister = async (payload) => {

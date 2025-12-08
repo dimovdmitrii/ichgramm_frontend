@@ -1,5 +1,6 @@
 import axios from "axios";
 import { store } from "../../store/store";
+import { refreshUserToken } from "../../store/auth/authOperations";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -14,7 +15,8 @@ instance.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh") &&
-      !originalRequest.url?.includes("/auth/login")
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/logout")
     ) {
       originalRequest._retry = true;
 
@@ -30,7 +32,7 @@ instance.interceptors.response.use(
           .dispatch(refreshUserToken(refreshToken))
           .unwrap();
 
-        const newAccessToken = result?.accessToken || result?.accessTokenss;
+        const newAccessToken = result?.accessToken;
         if (newAccessToken) {
           instance.defaults.headers[
             "Authorization"

@@ -3,19 +3,25 @@ import { Navigate } from "react-router-dom";
 
 import LoginForm from "./LoginForm";
 import { loginUser } from "../../store/auth/authOperations";
-import { selectAuthRequest } from "../../store/auth/authSelectors";
+import {
+  selectLoading,
+  selectError,
+  selectIsLoginSuccess,
+  selectAccessToken,
+} from "../../store/auth/authSelectors";
 
 const Login = () => {
-  const { error, loading } = useSelector(selectAuthRequest);
-  const isLoginSuccess = useSelector((store) => store.auth.isLoginSuccess);
-  const accessToken = useSelector((store) => store.auth.accessToken);
+  const error = useSelector(selectError);
+  const loading = useSelector(selectLoading);
+  const isLoginSuccess = useSelector(selectIsLoginSuccess);
+  const accessToken = useSelector(selectAccessToken);
 
   const dispatch = useDispatch();
   const handleLogin = async (payload) => {
     dispatch(loginUser(payload));
   };
 
-  if (isLoginSuccess || accessToken) {
+  if (isLoginSuccess && accessToken) {
     return <Navigate to="/home" replace />;
   }
 

@@ -11,8 +11,21 @@ const LoginForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
     handleSubmit,
     setError,
     reset,
+    clearErrors,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    reset();
+    clearErrors();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Очищаем ошибки формы когда нет ошибок в Redux
+  useEffect(() => {
+    if (!requestErrors) {
+      clearErrors();
+    }
+  }, [requestErrors, clearErrors]);
 
   useEffect(() => {
     if (requestErrors) {
@@ -25,8 +38,9 @@ const LoginForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
   useEffect(() => {
     if (isSubmitSuccess) {
       reset();
+      clearErrors();
     }
-  }, [isSubmitSuccess, reset]);
+  }, [isSubmitSuccess, reset, clearErrors]);
 
   const onSubmit = (values) => {
     if (submitForm) {
