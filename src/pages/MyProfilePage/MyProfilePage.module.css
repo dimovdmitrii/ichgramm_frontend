@@ -15,7 +15,6 @@
   min-height: 0;
   border-left: 1px solid var(--color-border);
   display: flex;
- 
 }
 
 .container {
@@ -27,11 +26,11 @@
 }
 
 .header {
-  position: relative;  
+  position: relative;
   display: flex;
   align-items: flex-start;
   padding-bottom: 75px;
- }
+}
 
 .avatarContainer {
   position: relative;
@@ -45,7 +44,6 @@
   position: relative;
   width: 168px;
   height: 168px;
- 
 }
 
 .ringRainbow {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
@@ -19,9 +19,35 @@ const MyProfilePage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(() => {
+    // Загружаем сохраненное изображение из localStorage при монтировании
+    const savedAvatar = localStorage.getItem("profileAvatar");
+    return savedAvatar || null;
+  });
   const posts = [profile1, profile2, profile3, profile4, profile5, profile6];
   const fullBio = "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
   const shortBio = "БЕСПЛАТНЫЙ";
+
+  // Синхронизируем изменения аватара из localStorage
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const savedAvatar = localStorage.getItem("profileAvatar");
+      if (savedAvatar) {
+        setAvatarPreview(savedAvatar);
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    // Также проверяем при монтировании
+    const savedAvatar = localStorage.getItem("profileAvatar");
+    if (savedAvatar) {
+      setAvatarPreview(savedAvatar);
+    }
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   const handleEditProfile = () => {
     navigate("/edit-profile");
@@ -52,7 +78,7 @@ const MyProfilePage = () => {
                     className={styles.ringRainbow}
                   />
                   <img
-                    src={profileLogo}
+                    src={avatarPreview || profileLogo}
                     alt="Profile"
                     className={styles.avatar}
                   />
@@ -61,7 +87,10 @@ const MyProfilePage = () => {
               <div className={styles.profileInfo}>
                 <div className={styles.usernameSection}>
                   <h2 className={styles.username}>itcareerhub</h2>
-                  <button className={styles.editButton} onClick={handleEditProfile}>
+                  <button
+                    className={styles.editButton}
+                    onClick={handleEditProfile}
+                  >
                     Edit profile
                   </button>
                 </div>
@@ -78,7 +107,9 @@ const MyProfilePage = () => {
                 </div>
                 <div className={styles.bioSection}>
                   <div className={styles.bio}>
-                    <p>• Гарантия помощи с трудоустройством в ведущие IT-компании</p>
+                    <p>
+                      • Гарантия помощи с трудоустройством в ведущие IT-компании
+                    </p>
                     <p>• Выпускники зарабатывают от 45к евро</p>
                     <p>
                       {isExpanded ? fullBio : shortBio}
@@ -112,7 +143,10 @@ const MyProfilePage = () => {
                       alt="Link icon"
                       className={styles.linkIcon}
                     />
-                    <a href="https://bit.ly/3rpiIbh" className={styles.externalLink}>
+                    <a
+                      href="https://bit.ly/3rpiIbh"
+                      className={styles.externalLink}
+                    >
                       bit.ly/3rpiIbh
                     </a>
                   </div>
@@ -126,7 +160,11 @@ const MyProfilePage = () => {
                   className={styles.postItem}
                   onClick={() => handlePostClick(index)}
                 >
-                  <img src={post} alt={`Post ${index + 1}`} className={styles.postImage} />
+                  <img
+                    src={post}
+                    alt={`Post ${index + 1}`}
+                    className={styles.postImage}
+                  />
                 </div>
               ))}
             </div>

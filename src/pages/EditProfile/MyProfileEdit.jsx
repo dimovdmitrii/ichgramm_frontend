@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from "../../shared/components/Footer/footer";
@@ -14,11 +14,17 @@ import { persistor } from "../../store/store";
 const MyProfileEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const fileInputRef = useRef(null);
   const [username, setUsername] = useState("ichschool");
   const [website, setWebsite] = useState("bit.ly/3rpiIbh");
   const [about, setAbout] = useState(
     "• Гарантия помощи с трудоустройством в ведущие IT-компании\n• Выпускники зарабатывают от 45к евро\nБЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ"
   );
+  const [avatarPreview, setAvatarPreview] = useState(() => {
+    // Загружаем сохраненное изображение из localStorage при монтировании
+    const savedAvatar = localStorage.getItem("profileAvatar");
+    return savedAvatar || null;
+  });
   const maxAboutLength = 150;
   const aboutLength = about.length;
 
@@ -39,6 +45,31 @@ const MyProfileEdit = () => {
     }
   };
 
+  const handleNewPhotoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Проверяем тип файла
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file");
+        return;
+      }
+
+      // Создаем preview изображения
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageUrl = reader.result;
+        setAvatarPreview(imageUrl);
+        // Сохраняем в localStorage для синхронизации между страницами
+        localStorage.setItem("profileAvatar", imageUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <>
       <Sidebar />
@@ -56,7 +87,7 @@ const MyProfileEdit = () => {
                     className={styles.ringRainbow}
                   />
                   <img
-                    src={profileLogo}
+                    src={avatarPreview || profileLogo}
                     alt="Profile"
                     className={styles.avatar}
                   />
@@ -73,7 +104,19 @@ const MyProfileEdit = () => {
                   • Гарантия помощи с трудоустройством в ведущие IT-компании
                 </p>
               </div>
-              <button className={styles.newPhotoButton}>New photo</button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <button
+                className={styles.newPhotoButton}
+                onClick={handleNewPhotoClick}
+              >
+                New photo
+              </button>
             </div>
 
             <div className={styles.formSection}>

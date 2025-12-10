@@ -6,12 +6,33 @@ import roadThumbnail from "../../assets/Images/roadSmall.png";
 const NotificationModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (isOpen) {
+      // Сохраняем текущую позицию прокрутки
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
       document.body.style.overflow = "hidden";
     } else {
+      // Восстанавливаем позицию прокрутки
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
       document.body.style.overflow = "unset";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
     }
     return () => {
+      // Очистка при размонтировании
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
       document.body.style.overflow = "unset";
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
     };
   }, [isOpen]);
 
@@ -58,8 +79,9 @@ const NotificationModal = ({ isOpen, onClose }) => {
               <div className={styles.notificationText}>
                 <span className={styles.username}>{notification.username}</span>
                 <span className={styles.action}> {notification.action} </span>
-                <span className={styles.object}>{notification.object} </span>
-                <span className={styles.time}>{notification.time}</span>
+                <br />
+                <span className={styles.object}>{notification.object}</span>
+                <span className={styles.time}> {notification.time}</span>
               </div>
               <img
                 src={roadThumbnail}

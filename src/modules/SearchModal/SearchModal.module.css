@@ -3,7 +3,7 @@
   top: 0;
   left: 244px;
   right: 0;
-  bottom: 158px;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.65);
   z-index: 200;
 }
@@ -13,12 +13,12 @@
   left: 244px;
   top: 0;
   width: 397px;
-  height: calc(100vh - 158px);
+  height: 100vh;
   background: var(--color-background);
   border-right: 1px solid var(--color-border);
-  border-top-right-radius: 0;
+  border-top-right-radius: 16px;
   border-bottom: none;
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 16px;
   border-left: 1px solid rgba(214, 211, 211, 0.8);
   z-index: 201;
   overflow-y: auto;
@@ -126,4 +126,3 @@
   color: #000000;
   line-height: 18px;
 }
-
