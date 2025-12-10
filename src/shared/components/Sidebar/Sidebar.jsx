@@ -19,18 +19,21 @@ import NotificationModal from "../../../modules/NotificationModal/NotificationMo
 import SearchModal from "../../../modules/SearchModal/SearchModal";
 import MessagesListModal from "../../../modules/MessagesListModal/MessagesListModal";
 import ChatModal from "../../../modules/ChatModal/ChatModal";
+import CreatePostModal from "../../../modules/CreatePostModal/CreatePostModal";
 
 const Sidebar = () => {
   const location = useLocation();
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
 
   useEffect(() => {
     setIsNotificationModalOpen(false);
     setIsSearchModalOpen(false);
     setIsMessagesModalOpen(false);
+    setIsCreateModalOpen(false);
     setSelectedChat(null);
   }, [location.pathname]);
 
@@ -73,6 +76,7 @@ const Sidebar = () => {
       label: "Create",
       icon: createIcon,
       iconBold: createIcon,
+      isModal: true,
     },
   ];
 
@@ -91,6 +95,8 @@ const Sidebar = () => {
                 ? isSearchModalOpen
                 : item.path === "/messages"
                 ? isMessagesModalOpen
+                : item.path === "/create"
+                ? isCreateModalOpen
                 : false
               : location.pathname === item.path;
           const handleClick = () => {
@@ -99,19 +105,28 @@ const Sidebar = () => {
                 setIsNotificationModalOpen((prev) => !prev);
                 setIsSearchModalOpen(false);
                 setIsMessagesModalOpen(false);
+                setIsCreateModalOpen(false);
                 setSelectedChat(null);
               } else if (item.path === "/search") {
                 setIsSearchModalOpen((prev) => !prev);
                 setIsNotificationModalOpen(false);
                 setIsMessagesModalOpen(false);
+                setIsCreateModalOpen(false);
                 setSelectedChat(null);
               } else if (item.path === "/messages") {
                 setIsMessagesModalOpen((prev) => !prev);
                 setIsNotificationModalOpen(false);
                 setIsSearchModalOpen(false);
+                setIsCreateModalOpen(false);
                 if (!isMessagesModalOpen) {
                   setSelectedChat(null);
                 }
+              } else if (item.path === "/create") {
+                setIsCreateModalOpen((prev) => !prev);
+                setIsNotificationModalOpen(false);
+                setIsSearchModalOpen(false);
+                setIsMessagesModalOpen(false);
+                setSelectedChat(null);
               }
             }
           };
@@ -149,6 +164,7 @@ const Sidebar = () => {
                 setIsNotificationModalOpen(false);
                 setIsSearchModalOpen(false);
                 setIsMessagesModalOpen(false);
+                setIsCreateModalOpen(false);
                 setSelectedChat(null);
               }}
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
@@ -175,6 +191,7 @@ const Sidebar = () => {
           setIsNotificationModalOpen(false);
           setIsSearchModalOpen(false);
           setIsMessagesModalOpen(false);
+          setIsCreateModalOpen(false);
           setSelectedChat(null);
         }}
         className={styles.profileItem}
@@ -212,6 +229,10 @@ const Sidebar = () => {
           setIsMessagesModalOpen(false);
         }}
         chat={selectedChat}
+      />
+      <CreatePostModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
       />
     </aside>
   );

@@ -15,7 +15,7 @@ const MyProfileEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
-  const [username, setUsername] = useState("ichschool");
+  const [username, setUsername] = useState("itcareerhub");
   const [website, setWebsite] = useState("bit.ly/3rpiIbh");
   const [about, setAbout] = useState(
     "• Гарантия помощи с трудоустройством в ведущие IT-компании\n• Выпускники зарабатывают от 45к евро\nБЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ"
@@ -99,7 +99,7 @@ const MyProfileEdit = () => {
                 </div>
               </div>
               <div className={styles.profileInfo}>
-                <h2 className={styles.profileName}>ichschool</h2>
+                <h2 className={styles.profileName}>itcareerhub</h2>
                 <p className={styles.profileBio}>
                   • Гарантия помощи с трудоустройством в ведущие IT-компании
                 </p>

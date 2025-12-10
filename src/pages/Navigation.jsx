@@ -8,7 +8,6 @@ import MyProfilePage from "./MyProfilePage/MyProfilePage";
 import MyProfileEdit from "./EditProfile/MyProfileEdit";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import ResetPage from "./Authenticate/ResetPage/ResetPage";
-import CreatePage from "./CreatePage/CreatePage";
 import OtherPostPage from "./OtherProfilePage/OtherPostPage";
 import OtherProfilePage from "./OtherProfilePage/OtherProfilePage";
 import PrivacyPolicy from "./PrivacyTerms/PrivacyPolicy/PrivacyPolicy";
@@ -37,7 +36,6 @@ const Navigation = () => {
         <Route path="/my-profile" element={<MyProfilePage />} />
         <Route path="/edit-profile" element={<MyProfileEdit />} />
         <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/create" element={<CreatePage />} />
         <Route path="/other-posts" element={<OtherPostPage />} />
         <Route path="/other-profile" element={<OtherProfilePage />} />
       </Route>
