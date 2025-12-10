@@ -19,7 +19,6 @@ export const logOut = async () => {
   try {
     await instance.post("/auth/logout");
   } catch (error) {
-    // Игнорируем ошибки при логауте, так как состояние уже очищается
     console.error("Logout endpoint error (ignored):", error?.response?.status);
   }
   instance.defaults.headers["Authorization"] = "";

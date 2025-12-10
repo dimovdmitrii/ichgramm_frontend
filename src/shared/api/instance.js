@@ -1,6 +1,6 @@
 import axios from "axios";
 import { store } from "../../store/store";
-import { refreshUserToken } from "../../store/auth/authOperations";
+import { refreshUserToken, logoutUser } from "../../store/auth/authOperations";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -16,7 +16,8 @@ instance.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh") &&
       !originalRequest.url?.includes("/auth/login") &&
-      !originalRequest.url?.includes("/logout")
+      !originalRequest.url?.includes("/auth/logout") &&
+      !originalRequest.url?.includes("/auth/register")
     ) {
       originalRequest._retry = true;
 
@@ -25,6 +26,7 @@ instance.interceptors.response.use(
         const { refreshToken } = state.auth;
 
         if (!refreshToken) {
+          store.dispatch(logoutUser());
           throw new Error("No refresh token available");
         }
 
@@ -43,6 +45,8 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
+
+        store.dispatch(logoutUser());
 
         return Promise.reject(refreshError);
       }

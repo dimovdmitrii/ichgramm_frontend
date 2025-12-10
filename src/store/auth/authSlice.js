@@ -42,7 +42,7 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.isLoginSuccess = false; // Сбрасываем при новом логине
+        state.isLoginSuccess = false;
       })
       .addCase(loginUser.fulfilled, (state, { payload }) => {
         state.loading = false;
@@ -55,7 +55,7 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
-        state.isLoginSuccess = false; // Сбрасываем при ошибке
+        state.isLoginSuccess = false;
       })
       // Logout cases
       .addCase(logoutUser.pending, (state) => {
@@ -74,7 +74,6 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
-        // Очищаем состояние даже при ошибке логаута
         state.user = null;
         state.accessToken = null;
         state.refreshToken = null;
@@ -89,13 +88,17 @@ const authSlice = createSlice({
       .addCase(refreshUserToken.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.accessToken = payload?.accessToken || null;
-        state.refreshToken = payload?.refreshToken || state.refreshToken; // Сохраняем старый, если новый не пришел
+        state.refreshToken = payload?.refreshToken || state.refreshToken;
         state.error = null;
       })
       .addCase(refreshUserToken.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
-        // При ошибке можно очистить токены или оставить как есть
+        // Если refreshToken истек, очищаем все токены
+        state.accessToken = null;
+        state.refreshToken = null;
+        state.user = null;
+        state.isLoginSuccess = false;
       });
     // Current token cases
     builder
@@ -114,8 +117,11 @@ const authSlice = createSlice({
       .addCase(getCurrentUser.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+        // Если getCurrentUser не удался, очищаем токены и пользователя
         state.accessToken = null;
         state.refreshToken = null;
+        state.user = null;
+        state.isLoginSuccess = false;
       });
   },
 });
