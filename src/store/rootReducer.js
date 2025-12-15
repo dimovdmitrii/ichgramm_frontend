@@ -4,13 +4,14 @@ import storage from "redux-persist/lib/storage";
 
 import authReducer from "./auth/authSlice";
 
-const persistConfig = {
-  key: "root",
+// Настраиваем persist для слайса auth, чтобы сохранять пользователя и токены
+const authPersistConfig = {
+  key: "auth",
   storage,
-  whitelist: ["accessToken", "refreshToken"],
+  whitelist: ["accessToken", "refreshToken", "user"],
 };
 
-const persistedAuthReducer = persistReducer(persistConfig, authReducer);
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,

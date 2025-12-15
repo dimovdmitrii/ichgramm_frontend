@@ -1,5 +1,15 @@
 import styles from "./Input.module.css";
 
+interface InputProps {
+  type: string;
+  placeholder: string;
+  style: string;
+  className: string;
+  min: number;
+  max: number;
+  id: string;
+}
+
 export const Input = ({
   type = "text",
   placeholder = "",
@@ -9,7 +19,7 @@ export const Input = ({
   max = 2000,
   id,
   ...rest
-}) => {
+}: InputProps) => {
   return (
     <input
       type={type}

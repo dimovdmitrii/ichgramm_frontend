@@ -8,6 +8,7 @@ import {
   selectError,
   selectIsLoginSuccess,
   selectAccessToken,
+  selectUser,
 } from "../../store/auth/authSelectors";
 
 const Login = () => {
@@ -15,13 +16,15 @@ const Login = () => {
   const loading = useSelector(selectLoading);
   const isLoginSuccess = useSelector(selectIsLoginSuccess);
   const accessToken = useSelector(selectAccessToken);
+  const user = useSelector(selectUser);
 
   const dispatch = useDispatch();
   const handleLogin = async (payload) => {
     dispatch(loginUser(payload));
   };
 
-  if (isLoginSuccess && accessToken) {
+  // Если пользователь уже залогинен, не показываем страницу логина
+  if (user || (isLoginSuccess && accessToken)) {
     return <Navigate to="/home" replace />;
   }
 
