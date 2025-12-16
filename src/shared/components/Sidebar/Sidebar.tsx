@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import styles from "./Sidebar.module.css";
@@ -21,13 +21,31 @@ import MessagesListModal from "../../../modules/MessagesListModal/MessagesListMo
 import ChatModal from "../../../modules/ChatModal/ChatModal";
 import CreatePostModal from "../../../modules/CreatePostModal/CreatePostModal";
 
-const Sidebar = () => {
+interface Chat {
+  id: number;
+  username: string;
+  avatar: string;
+  lastMessage?: string;
+  time?: string;
+}
+
+interface NavItem {
+  path: string;
+  label: string;
+  icon: string;
+  iconBold: string;
+  isModal?: boolean;
+}
+
+const Sidebar: FC = () => {
   const location = useLocation();
-  const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-  const [isMessagesModalOpen, setIsMessagesModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedChat, setSelectedChat] = useState(null);
+  const [isNotificationModalOpen, setIsNotificationModalOpen] =
+    useState<boolean>(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false);
+  const [isMessagesModalOpen, setIsMessagesModalOpen] =
+    useState<boolean>(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
   useEffect(() => {
     setIsNotificationModalOpen(false);
@@ -37,7 +55,7 @@ const Sidebar = () => {
     setSelectedChat(null);
   }, [location.pathname]);
 
-  const navItems = [
+  const navItems: NavItem[] = [
     {
       path: "/home",
       label: "Home",
@@ -87,18 +105,17 @@ const Sidebar = () => {
       </div>
       <nav className={styles.nav}>
         {navItems.map((item) => {
-          const isActive =
-            item.isModal
-              ? item.path === "/notifications"
-                ? isNotificationModalOpen
-                : item.path === "/search"
-                ? isSearchModalOpen
-                : item.path === "/messages"
-                ? isMessagesModalOpen
-                : item.path === "/create"
-                ? isCreateModalOpen
-                : false
-              : location.pathname === item.path;
+          const isActive = item.isModal
+            ? item.path === "/notifications"
+              ? isNotificationModalOpen
+              : item.path === "/search"
+              ? isSearchModalOpen
+              : item.path === "/messages"
+              ? isMessagesModalOpen
+              : item.path === "/create"
+              ? isCreateModalOpen
+              : false
+            : location.pathname === item.path;
           const handleClick = () => {
             if (item.isModal) {
               if (item.path === "/notifications") {
@@ -130,7 +147,7 @@ const Sidebar = () => {
               }
             }
           };
-          
+
           const iconSrc = isActive ? item.iconBold : item.icon;
 
           if (item.isModal) {
@@ -140,11 +157,7 @@ const Sidebar = () => {
                 onClick={handleClick}
                 className={`${styles.navItem} ${isActive ? styles.active : ""}`}
               >
-                <img
-                  src={iconSrc}
-                  alt={item.label}
-                  className={styles.icon}
-                />
+                <img src={iconSrc} alt={item.label} className={styles.icon} />
                 <span
                   className={`${styles.label} ${
                     isActive ? styles.labelBold : ""
@@ -155,7 +168,7 @@ const Sidebar = () => {
               </button>
             );
           }
-          
+
           return (
             <Link
               key={item.path}
@@ -169,11 +182,7 @@ const Sidebar = () => {
               }}
               className={`${styles.navItem} ${isActive ? styles.active : ""}`}
             >
-              <img
-                src={iconSrc}
-                alt={item.label}
-                className={styles.icon}
-              />
+              <img src={iconSrc} alt={item.label} className={styles.icon} />
               <span
                 className={`${styles.label} ${
                   isActive ? styles.labelBold : ""
@@ -219,7 +228,7 @@ const Sidebar = () => {
           setIsMessagesModalOpen(false);
           setSelectedChat(null);
         }}
-        onSelectChat={(chat) => setSelectedChat(chat)}
+        onSelectChat={(chat: Chat) => setSelectedChat(chat)}
         selectedChatId={selectedChat?.id}
       />
       <ChatModal
@@ -233,6 +242,8 @@ const Sidebar = () => {
       <CreatePostModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
+        editPost={undefined}
+        onSave={undefined}
       />
     </aside>
   );

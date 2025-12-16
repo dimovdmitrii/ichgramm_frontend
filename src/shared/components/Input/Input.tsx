@@ -3,7 +3,7 @@ import styles from "./Input.module.css";
 interface InputProps {
   type: string;
   placeholder: string;
-  style: string;
+  style: object;
   className: string;
   min: number;
   max: number;

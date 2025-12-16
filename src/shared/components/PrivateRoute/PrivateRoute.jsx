@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
-import { selectUser } from "../../../store/auth/authSelectors";
+import { selectTokens } from "../../../store/auth/authSelectors";
 
 const PrivateRoute = () => {
-  const user = useSelector(selectUser);
+  const isAuth = useSelector(selectTokens); // true, если есть accessToken
 
-  if (!user) return <Navigate to="/" />;
+  if (!isAuth) return <Navigate to="/" />;
 
   return <Outlet />;
 };

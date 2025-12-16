@@ -1,3 +1,4 @@
+import { FC } from "react";
 import styles from "./Post.module.css";
 import sashaaAvatar from "../../../assets/Images/sashaa.jpg";
 import defaultPostImage from "../../../assets/Images/Background+Border.png";
@@ -5,7 +6,11 @@ import commentIcon from "../../../assets/icons/Button_Commenting.svg";
 import likeIcon from "../../../assets/icons/sidebar/notifications.svg";
 import ringRainbow from "../../../assets/Images/ring-rainbow.png";
 
-const Post = ({ postImage }) => {
+interface PostProps {
+  postImage?: string;
+}
+
+const Post: FC<PostProps> = ({ postImage }) => {
   return (
     <article className={styles.post}>
       <div className={styles.postHeader}>
@@ -24,7 +29,11 @@ const Post = ({ postImage }) => {
         <button className={styles.followButton}>follow</button>
       </div>
       <div className={styles.postImageContainer}>
-        <img src={postImage || defaultPostImage} alt="Post" className={styles.postImage} />
+        <img
+          src={postImage || defaultPostImage}
+          alt="Post"
+          className={styles.postImage}
+        />
       </div>
       <div className={styles.postActions}>
         <div className={styles.actionIcons}>
