@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./MessagesListModal.module.css";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
 import nikitaAvatar from "../../assets/Images/nikita.jpg";
@@ -36,6 +37,8 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
     };
   }, [isOpen]);
 
+  const navigate = useNavigate();
+
   if (!isOpen) return null;
 
   const chats = [
@@ -61,6 +64,11 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
     }
   };
 
+  const handleOpenProfile = (event, username) => {
+    event.stopPropagation();
+    navigate(`/other-profile/${username}`);
+  };
+
   return (
     <>
       <div className={styles.overlay} onClick={onClose} />
@@ -79,10 +87,16 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
                 src={chat.avatar}
                 alt={chat.username}
                 className={styles.avatar}
+                onClick={(event) => handleOpenProfile(event, chat.username)}
               />
               <div className={styles.chatInfo}>
                 <div className={styles.chatHeader}>
-                  <span className={styles.username}>{chat.username}</span>
+                  <span
+                    className={styles.username}
+                    onClick={(event) => handleOpenProfile(event, chat.username)}
+                  >
+                    {chat.username}
+                  </span>
                   <span className={styles.separator}>·</span>
                   <span className={styles.time}>{chat.time}</span>
                 </div>

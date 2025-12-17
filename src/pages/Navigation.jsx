@@ -37,7 +37,7 @@ const Navigation = () => {
         <Route path="/edit-profile" element={<MyProfileEdit />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/other-posts" element={<OtherPostPage />} />
-        <Route path="/other-profile" element={<OtherProfilePage />} />
+        <Route path="/other-profile/:username" element={<OtherProfilePage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

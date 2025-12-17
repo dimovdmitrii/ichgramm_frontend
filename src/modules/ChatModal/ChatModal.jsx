@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./ChatModal.module.css";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
 import nikitaAvatar from "../../assets/Images/nikita.jpg";
@@ -6,6 +7,10 @@ import logoSmall from "../../assets/icons/MyProfile_Logo.svg";
 
 const ChatModal = ({ isOpen, onClose, chat }) => {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const wsRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) {
@@ -18,28 +23,112 @@ const ChatModal = ({ isOpen, onClose, chat }) => {
     };
   }, [isOpen]);
 
-  if (!isOpen || !chat) return null;
+  useEffect(() => {
+    if (!isOpen || !chat) {
+      return;
+    }
 
-  const messages = [
-    {
-      id: 1,
-      isIncoming: true,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      avatar: chat.username === "nikiita" ? nikitaAvatar : sashaaAvatar,
-    },
-    {
-      id: 2,
-      isIncoming: false,
-      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    },
-  ];
+    const token = localStorage.getItem("accessToken");
+    const baseUrl = import.meta.env.VITE_WS_URL || "ws://localhost:3000/ws/chat";
+    const WS_URL = token ? `${baseUrl}?token=${encodeURIComponent(token)}` : baseUrl;
+
+    const socket = new WebSocket(WS_URL);
+    wsRef.current = socket;
+
+    socket.onopen = () => {
+      socket.send(
+        JSON.stringify({
+          type: "load",
+          with: chat.username,
+        }),
+      );
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === "history" && Array.isArray(data.messages)) {
+          setMessages(
+            data.messages.map((m) => ({
+              id: m.id || m._id || Date.now(),
+              isIncoming: m.from === chat.username,
+              text: m.text,
+              avatar:
+                m.from === chat.username
+                  ? chat.username === "nikiita"
+                    ? nikitaAvatar
+                    : sashaaAvatar
+                  : undefined,
+            })),
+          );
+        } else if (data.type === "message") {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now(),
+              isIncoming: data.from === chat.username,
+              text: data.text,
+              avatar:
+                data.from === chat.username
+                  ? chat.username === "nikiita"
+                    ? nikitaAvatar
+                    : sashaaAvatar
+                  : undefined,
+            },
+          ]);
+        }
+      } catch {
+        // ignore malformed messages
+      }
+    };
+
+    socket.onerror = () => {};
+
+    socket.onclose = () => {
+      wsRef.current = null;
+    };
+
+    return () => {
+      socket.close();
+      wsRef.current = null;
+      setMessages([]);
+    };
+  }, [isOpen, chat]);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  if (!isOpen || !chat) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      // Здесь будет логика отправки сообщения
+      const newMessage = {
+        id: Date.now(),
+        isIncoming: false,
+        text: message.trim(),
+      };
+      setMessages((prev) => [...prev, newMessage]);
+
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(
+          JSON.stringify({
+            type: "message",
+            to: chat.username,
+            text: message.trim(),
+          })
+        );
+      }
+
       setMessage("");
     }
+  };
+
+  const handleViewProfile = () => {
+    navigate(`/other-profile/${chat.username}`);
   };
 
   return (
@@ -55,7 +144,13 @@ const ChatModal = ({ isOpen, onClose, chat }) => {
             <img src={chat.avatar} alt={chat.username} className={styles.profileAvatar} />
             <h3 className={styles.profileName}>{chat.username}</h3>
             <p className={styles.profileUsername}>{chat.username} · ICHgram</p>
-            <button className={styles.viewProfileButton}>View profile</button>
+            <button
+              className={styles.viewProfileButton}
+              type="button"
+              onClick={handleViewProfile}
+            >
+              View profile
+            </button>
             <p className={styles.timestamp}>Jun 26, 2024, 08:49 PM.</p>
           </div>
           <div className={styles.messagesContainer}>
@@ -89,6 +184,7 @@ const ChatModal = ({ isOpen, onClose, chat }) => {
                 )}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </div>
         <form className={styles.messageInputContainer} onSubmit={handleSubmit}>
