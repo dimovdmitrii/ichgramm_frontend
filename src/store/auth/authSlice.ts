@@ -8,19 +8,47 @@ import {
   getCurrentUser,
 } from "./authOperations";
 
-const initialState = {
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+}
+
+interface ApiError {
+  message: string;
+  response: {
+    data: {
+      message: string;
+    };
+  };
+}
+interface AuthStore {
+  user: User | null;
+  loading: boolean;
+  apiError: ApiError | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+  isLoginSuccess: boolean;
+  isRegisterSuccess: boolean;
+  error: any;
+}
+
+const initialState: AuthStore = {
   user: null,
   loading: false,
-  error: null,
+  apiError: null,
   accessToken: null,
   refreshToken: null,
-  isRegisterSuccess: false,
   isLoginSuccess: false,
+  isRegisterSuccess: false,
+  error: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
+  reducers: {},
   extraReducers: (builder) => {
     builder;
     // Register cases

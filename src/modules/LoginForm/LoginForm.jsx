@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Input from "../../shared/components/Input/Input";
+import TextField from "../../shared/components/TextField/TextField";
 import Button from "../../shared/components/Button/Button";
 import styles from "./LoginForm.module.css";
 
@@ -51,24 +51,20 @@ const LoginForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <div className={`${styles.inputWrapper} ${styles.usernameInput}`}>
-        <Input
+        <TextField
           type="text"
           placeholder="Username, or email"
-          {...register("username")}
+          register={register("username")}
+          error={errors.username?.message}
         />
-        {errors.username && (
-          <p className={styles.errorText}>{errors.username.message}</p>
-        )}
       </div>
       <div className={`${styles.inputWrapper} ${styles.passwordInput}`}>
-        <Input
+        <TextField
           type="password"
           placeholder="Password"
-          {...register("password")}
+          register={register("password")}
+          error={errors.password?.message}
         />
-        {errors.password && (
-          <p className={styles.errorText}>{errors.password.message}</p>
-        )}
       </div>
       <div className={styles.buttonWrapper}>
         <Button type="submit">Log in</Button>

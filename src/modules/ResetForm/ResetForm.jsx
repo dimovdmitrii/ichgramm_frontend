@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import Input from "../../shared/components/Input/Input";
+import TextField from "../../shared/components/TextField/TextField";
 import Button from "../../shared/components/Button/Button";
 import styles from "./ResetForm.module.css";
 import lockIcon from "../../assets/icons/Trouble_logging _n_.svg";
@@ -38,10 +38,10 @@ const ResetForm = () => {
 
       {/* Input field */}
       <div className={styles.inputWrapper}>
-        <Input
+        <TextField
           type="text"
           placeholder="Email or Username"
-          {...register("emailOrUsername")}
+          register={register("emailOrUsername")}
         />
       </div>
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { AxiosInstance } from "axios";
 import { store } from "../../store/store";
 import { refreshUserToken, logoutUser } from "../../store/auth/authOperations";
 

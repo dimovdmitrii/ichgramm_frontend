@@ -1,6 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import * as authApi from "../../shared/api/auth-api";
+import type { AxiosError } from "axios";
+
+type ApiError = AxiosError<{
+  message: string;
+}>;
 
 export const registerUser = createAsyncThunk(
   "register",
@@ -8,22 +13,25 @@ export const registerUser = createAsyncThunk(
     try {
       const data = await authApi.register(payload);
       return data;
-    } catch (error) {
+    } catch (error: unknown) {
+      const axiosError = error as ApiError;
       return rejectWithValue({
-        email: error?.response?.data?.message || error?.message,
+        email: axiosError?.response?.data?.message || axiosError?.message,
       });
     }
   }
 );
+
 export const loginUser = createAsyncThunk(
   "login",
   async (payload, { rejectWithValue }) => {
     try {
       const data = await authApi.login(payload);
       return data;
-    } catch (error) {
+    } catch (error: unknown) {
+      const axiosError = error as ApiError;
       return rejectWithValue({
-        email: error?.response?.data?.message || error?.message,
+        email: axiosError?.response?.data?.message || axiosError?.message,
       });
     }
   }
@@ -35,9 +43,12 @@ export const logoutUser = createAsyncThunk(
     try {
       await authApi.logOut();
       return null;
-    } catch (error) {
+    } catch (error: unknown) {
+      const axiosError = error as ApiError;
       return rejectWithValue(
-        error?.response?.data?.message || error?.message || "Logout failed"
+        axiosError?.response?.data?.message ||
+          axiosError?.message ||
+          "Logout failed"
       );
     }
   }
@@ -49,10 +60,11 @@ export const refreshUserToken = createAsyncThunk(
     try {
       const data = await authApi.refreshToken(refreshToken);
       return data;
-    } catch (error) {
+    } catch (error: unknown) {
+      const axiosError = error as ApiError;
       return rejectWithValue(
-        error?.response?.data?.message ||
-          error?.message ||
+        axiosError?.response?.data?.message ||
+          axiosError?.message ||
           "Token refresh failed"
       );
     }
@@ -63,12 +75,13 @@ export const getCurrentUser = createAsyncThunk(
   "current",
   async (_, { rejectWithValue, getState }) => {
     try {
-      const { auth } = getState();
-      const data = await authApi.getCurrent(auth.accessToken);
+      const state = getState() as any;
+      const data = await authApi.getCurrent(state?.auth?.accessToken);
       return data;
-    } catch (error) {
+    } catch (error: unknown) {
+      const axiosError = error as ApiError;
       return rejectWithValue({
-        email: error?.response?.data.message || error?.message,
+        email: axiosError?.response?.data.message || axiosError?.message,
       });
     }
   }

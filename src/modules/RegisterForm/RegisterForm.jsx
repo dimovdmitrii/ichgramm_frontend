@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import Input from "../../shared/components/Input/Input";
+import TextField from "../../shared/components/TextField/TextField";
 import Button from "../../shared/components/Button/Button";
 import styles from "./RegisterForm.module.css";
 
@@ -44,32 +44,36 @@ const RegisterForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
 
       {/* Input fields */}
       <div className={`${styles.inputWrapper} ${styles.emailInput}`}>
-        <Input type="email" placeholder="Email" {...register("email")} />
-        {errors.email && (
-          <p className={styles.errorText}>{errors.email.message}</p>
-        )}
+        <TextField
+          type="email"
+          placeholder="Email"
+          register={register("email")}
+          error={errors.email?.message}
+        />
       </div>
       <div className={`${styles.inputWrapper} ${styles.fullNameInput}`}>
-        <Input type="text" placeholder="Full Name" {...register("fullName")} />
-        {errors.fullName && (
-          <p className={styles.errorText}>{errors.fullName.message}</p>
-        )}
+        <TextField
+          type="text"
+          placeholder="Full Name"
+          register={register("fullName")}
+          error={errors.fullName?.message}
+        />
       </div>
       <div className={`${styles.inputWrapper} ${styles.usernameInput}`}>
-        <Input type="text" placeholder="Username" {...register("username")} />
-        {errors.username && (
-          <p className={styles.errorText}>{errors.username.message}</p>
-        )}
+        <TextField
+          type="text"
+          placeholder="Username"
+          register={register("username")}
+          error={errors.username?.message}
+        />
       </div>
       <div className={`${styles.inputWrapper} ${styles.passwordInput}`}>
-        <Input
+        <TextField
           type="password"
           placeholder="Password"
-          {...register("password")}
+          register={register("password")}
+          error={errors.password?.message}
         />
-        {errors.password && (
-          <p className={styles.errorText}>{errors.password.message}</p>
-        )}
       </div>
 
       {/* Legal text */}
