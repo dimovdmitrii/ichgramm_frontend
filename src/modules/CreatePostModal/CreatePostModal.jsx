@@ -5,15 +5,18 @@ import uploadIcon from "../../assets/icons/posts_icons/upload.svg";
 import borderIcon from "../../assets/icons/Border.svg";
 import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import { selectUser } from "../../store/auth/authSelectors";
+import { createPost, updatePost, getProfile } from "../../shared/api/users-api";
 
 const CreatePostModal = ({ isOpen, onClose, editPost, onSave }) => {
   const user = useSelector(selectUser);
   const fileInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [description, setDescription] = useState("");
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const maxDescriptionLength = 2200;
+  const maxDescriptionLength = 500; // Бэкенд ограничивает content до 500 символов
   const isEditMode = !!editPost;
 
   useEffect(() => {
@@ -51,22 +54,42 @@ const CreatePostModal = ({ isOpen, onClose, editPost, onSave }) => {
     };
   }, [isOpen]);
 
-  // Загружаем аватар из localStorage
+  // Загружаем аватар текущего пользователя
   useEffect(() => {
-    const savedAvatar = localStorage.getItem("profileAvatar");
-    if (savedAvatar) {
-      setAvatarPreview(savedAvatar);
+    const loadAvatar = async () => {
+      // Сначала пробуем из Redux store
+      if (user?.avatar) {
+        setAvatarPreview(user.avatar);
+        return;
+      }
+      
+      // Если нет в Redux, загружаем из API
+      try {
+        const profile = await getProfile();
+        if (profile?.avatar) {
+          setAvatarPreview(profile.avatar);
+        }
+      } catch (error) {
+        console.error("Failed to load profile avatar:", error);
+      }
+    };
+    
+    if (isOpen) {
+      loadAvatar();
     }
-  }, []);
+  }, [user, isOpen]);
 
   // Загружаем данные поста для редактирования
   useEffect(() => {
     if (editPost) {
       setSelectedImage(editPost.image);
-      setDescription(editPost.description || "");
+      // Бэкенд использует поле content, но поддерживаем и description для обратной совместимости
+      setDescription(editPost.content || editPost.description || "");
+      setSelectedFile(null); // При редактировании файл может быть не выбран
     } else {
       setSelectedImage(null);
       setDescription("");
+      setSelectedFile(null);
     }
   }, [editPost, isOpen]);
 
@@ -74,7 +97,57 @@ const CreatePostModal = ({ isOpen, onClose, editPost, onSave }) => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e) => {
+  // Функция для сжатия изображения
+  const compressImage = (file, maxWidth = 1280, maxHeight = 1280, quality = 0.7) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          // Вычисляем новые размеры с сохранением пропорций
+          if (width > height) {
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = (width * maxHeight) / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error("Failed to compress image"));
+              }
+            },
+            file.type,
+            quality
+          );
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
@@ -82,65 +155,155 @@ const CreatePostModal = ({ isOpen, onClose, editPost, onSave }) => {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Сжимаем изображение перед сохранением
+        const compressedFile = await compressImage(file);
+        setSelectedFile(compressedFile);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSelectedImage(reader.result);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error("Failed to compress image:", error);
+        // Если сжатие не удалось, используем оригинальный файл
+        setSelectedFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSelectedImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!selectedImage) return;
 
-    // Получаем существующие посты из localStorage
-    const existingPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+    setIsLoading(true);
 
-    if (isEditMode && editPost?.id) {
-      // Редактируем существующий пост
-      const updatedPosts = existingPosts.map((post) =>
-        post.id === editPost.id
-          ? {
-              ...post,
-              image: selectedImage,
-              description: description.trim() || "",
-            }
-          : post
-      );
+    try {
+      const formData = new FormData();
+      
+      if (isEditMode && editPost?._id) {
+        // Редактируем существующий пост
+        const updateData = {};
+        
+        if (selectedFile) {
+          // Конвертируем файл в base64 строку
+          const base64Image = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(selectedFile);
+          });
+          updateData.image = base64Image;
+        }
+        
+        if (description.trim()) {
+          updateData.content = description.trim();
+        }
 
-      // Сохраняем в localStorage
-      localStorage.setItem("userPosts", JSON.stringify(updatedPosts));
+        await updatePost(editPost._id, updateData);
+      } else {
+        // Создаем новый пост
+        if (!selectedFile) {
+          alert("Please select an image file");
+          setIsLoading(false);
+          return;
+        }
+
+        // Бэкенд ожидает image как строку (base64 или URL), а не файл
+        // Конвертируем файл в base64 строку
+        let base64Image = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(selectedFile);
+        });
+
+        // Проверяем размер base64 строки (примерно 1.33x от размера файла)
+        // Если больше 500KB, сжимаем еще больше
+        const maxBase64Size = 500 * 1024; // 500KB в символах
+        if (base64Image.length > maxBase64Size) {
+          console.log("Image too large, compressing further...", {
+            originalSize: base64Image.length,
+            fileSize: selectedFile.size,
+          });
+          
+          // Сжимаем с более низким качеством и меньшим размером
+          const compressedBlob = await compressImage(selectedFile, 1024, 1024, 0.5);
+          base64Image = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(compressedBlob);
+          });
+          
+          console.log("After compression:", {
+            newSize: base64Image.length,
+            blobSize: compressedBlob.size,
+          });
+          
+          // Если все еще слишком большое, сжимаем еще сильнее
+          if (base64Image.length > maxBase64Size) {
+            const finalCompressedBlob = await compressImage(selectedFile, 800, 800, 0.4);
+            base64Image = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(finalCompressedBlob);
+            });
+            console.log("Final compression:", {
+              finalSize: base64Image.length,
+              finalBlobSize: finalCompressedBlob.size,
+            });
+          }
+        }
+
+        // Бэкенд ожидает объект с полями image (строка) и content (строка, минимум 1 символ)
+        // Если описание пустое, используем пробел или дефолтное значение
+        const content = description.trim() || " ";
+
+        const postData = {
+          image: base64Image,
+          content: content,
+        };
+
+        console.log("Creating post with data:", {
+          hasImage: !!base64Image,
+          imageLength: base64Image?.length || 0,
+          imageSizeKB: Math.round((base64Image?.length || 0) / 1024),
+          content: postData.content || "(empty)",
+          contentLength: postData.content.length,
+        });
+
+        await createPost(postData);
+      }
 
       // Отправляем событие для обновления страницы профиля
       window.dispatchEvent(new Event("postsUpdated"));
 
-      // Вызываем callback для сохранения
+      // Вызываем callback для сохранения (перезагрузка постов)
       if (onSave) {
         onSave();
       }
-    } else {
-      // Создаем новый пост
-      const newPost = {
-        id: Date.now(), // Уникальный ID на основе времени
-        image: selectedImage,
-        description: description.trim() || "",
-        createdAt: new Date().toISOString(),
-      };
 
-      // Добавляем новый пост в начало массива
-      const updatedPosts = [newPost, ...existingPosts];
-
-      // Сохраняем в localStorage
-      localStorage.setItem("userPosts", JSON.stringify(updatedPosts));
-
-      // Отправляем событие для обновления страницы профиля
-      window.dispatchEvent(new Event("postsUpdated"));
+      // Очищаем форму и закрываем модальное окно
+      setSelectedImage(null);
+      setSelectedFile(null);
+      setDescription("");
+      onClose();
+    } catch (error) {
+      console.error("Failed to save post:", error);
+      console.error("Error response:", error?.response);
+      console.error("Error response data:", error?.response?.data);
+      const errorMessage = error?.response?.data?.message || error?.response?.data?.error || error?.message || "Failed to save post. Please try again.";
+      alert(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-
-    // Очищаем форму и закрываем модальное окно
-    setSelectedImage(null);
-    setDescription("");
-    onClose();
   };
 
   const username = user?.username || "itcareerhub";
@@ -158,9 +321,9 @@ const CreatePostModal = ({ isOpen, onClose, editPost, onSave }) => {
           <button
             className={styles.shareButton}
             onClick={handleShare}
-            disabled={!selectedImage}
+            disabled={!selectedImage || isLoading}
           >
-            {isEditMode ? "Save" : "Share"}
+            {isLoading ? "Saving..." : isEditMode ? "Save" : "Share"}
           </button>
         </div>
 

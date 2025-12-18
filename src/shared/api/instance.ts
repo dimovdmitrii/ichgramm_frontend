@@ -7,6 +7,25 @@ const instance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
+// Interceptor для установки токена перед каждым запросом
+instance.interceptors.request.use(
+  (config) => {
+    const state = store.getState();
+    const accessToken = state.auth?.accessToken;
+    
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    } else {
+      console.warn("No access token found in Redux store for request:", config.url);
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 instance.interceptors.response.use(
   (res) => res,
   async (error) => {

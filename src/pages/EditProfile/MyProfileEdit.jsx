@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import styles from "./MyProfileEdit.module.css";
@@ -8,29 +8,70 @@ import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import ringRainbow from "../../assets/Images/ring-rainbow.png";
 import linkIcon from "../../assets/icons/Link_Icon.svg";
 import borderIcon from "../../assets/icons/Border.svg";
-import { logoutUser } from "../../store/auth/authOperations";
+import { logoutUser, getCurrentUser } from "../../store/auth/authOperations";
 import { persistor } from "../../store/store";
+import { updateProfile, getProfile } from "../../shared/api/users-api";
+import { selectUser } from "../../store/auth/authSelectors";
 
 const MyProfileEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentUser = useSelector(selectUser);
   const fileInputRef = useRef(null);
-  const [username, setUsername] = useState("itcareerhub");
-  const [website, setWebsite] = useState("bit.ly/3rpiIbh");
-  const [about, setAbout] = useState(
-    "• Гарантия помощи с трудоустройством в ведущие IT-компании\n• Выпускники зарабатывают от 45к евро\nБЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ"
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState(currentUser?.username || "");
+  const [website, setWebsite] = useState(currentUser?.website || "");
+  const [about, setAbout] = useState(currentUser?.bio || "");
+  const [avatarPreview, setAvatarPreview] = useState(
+    currentUser?.avatar || null,
   );
-  const [avatarPreview, setAvatarPreview] = useState(() => {
-    // Загружаем сохраненное изображение из localStorage при монтировании
-    const savedAvatar = localStorage.getItem("profileAvatar");
-    return savedAvatar || null;
-  });
   const maxAboutLength = 150;
   const aboutLength = about.length;
 
-  const handleSave = () => {
-    // Здесь будет логика сохранения
-    navigate("/my-profile");
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await getProfile();
+        setUsername(profile.username || "");
+        setWebsite(profile.website || "");
+        setAbout(profile.bio || "");
+        setAvatarPreview(profile.avatar || null);
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+      }
+    };
+    loadProfile();
+  }, []);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const updateData = {};
+      if (username && username !== currentUser?.username) {
+        updateData.username = username;
+      }
+      if (website !== currentUser?.website) {
+        updateData.website = website || "";
+      }
+      if (about !== currentUser?.bio) {
+        updateData.bio = about;
+      }
+      if (avatarPreview && avatarPreview !== currentUser?.avatar) {
+        updateData.avatar = avatarPreview;
+      }
+
+      if (Object.keys(updateData).length > 0) {
+        await updateProfile(updateData);
+        // Обновляем данные пользователя в Redux через getCurrentUser
+        await dispatch(getCurrentUser()).unwrap();
+      }
+      navigate("/profile");
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      alert(error?.response?.data?.message || "Failed to update profile");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -52,19 +93,15 @@ const MyProfileEdit = () => {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Проверяем тип файла
       if (!file.type.startsWith("image/")) {
         alert("Please select an image file");
         return;
       }
 
-      // Создаем preview изображения
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageUrl = reader.result;
         setAvatarPreview(imageUrl);
-        // Сохраняем в localStorage для синхронизации между страницами
-        localStorage.setItem("profileAvatar", imageUrl);
       };
       reader.readAsDataURL(file);
     }
@@ -99,9 +136,9 @@ const MyProfileEdit = () => {
                 </div>
               </div>
               <div className={styles.profileInfo}>
-                <h2 className={styles.profileName}>itcareerhub</h2>
+                <h2 className={styles.profileName}>{username || "username"}</h2>
                 <p className={styles.profileBio}>
-                  • Гарантия помощи с трудоустройством в ведущие IT-компании
+                  {about.split("\n")[0] || "No bio"}
                 </p>
               </div>
               <input
@@ -143,6 +180,7 @@ const MyProfileEdit = () => {
                     className={styles.websiteInput}
                     value={website}
                     onChange={(e) => setWebsite(e.target.value)}
+                    placeholder="https://example.com"
                   />
                 </div>
               </div>
@@ -163,8 +201,12 @@ const MyProfileEdit = () => {
                 </div>
               </div>
               <div className={styles.buttonDiv}>
-                <button className={styles.saveButton} onClick={handleSave}>
-                  Save
+                <button
+                  className={styles.saveButton}
+                  onClick={handleSave}
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save"}
                 </button>
                 <button className={styles.logoutButton} onClick={handleLogout}>
                   Logout

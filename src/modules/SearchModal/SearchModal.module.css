@@ -126,3 +126,46 @@
   color: #000000;
   line-height: 18px;
 }
+
+.searchResults {
+  position: relative;
+  margin-top: 24px;
+  margin-left: 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.searchItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.searchItem:hover {
+  opacity: 0.7;
+}
+
+.loading {
+  padding: 16px 24px;
+  font-size: 14px;
+  color: #737373;
+  text-align: center;
+}
+
+.noResults {
+  padding: 16px 24px;
+  font-size: 14px;
+  color: #737373;
+  text-align: center;
+}
+
+.noRecent {
+  font-size: 14px;
+  color: #737373;
+  line-height: 18px;
+}

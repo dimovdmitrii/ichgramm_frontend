@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import MyPostModal from "../../modules/MyPostModal/MyPostModal";
@@ -14,85 +15,66 @@ import profile3 from "../../assets/Images/UsersProfile/Profile_Post3.png";
 import profile4 from "../../assets/Images/UsersProfile/Profile_Post4.png";
 import profile5 from "../../assets/Images/UsersProfile/Profile_Post5.png";
 import profile6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
+import { getProfile, getUserPosts, deletePost } from "../../shared/api/users-api";
+import { selectUser } from "../../store/auth/authSelectors";
 
 const MyProfilePage = () => {
   const navigate = useNavigate();
+  const currentUser = useSelector(selectUser);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const [postToEdit, setPostToEdit] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState(() => {
-    // Загружаем сохраненное изображение из localStorage при монтировании
-    const savedAvatar = localStorage.getItem("profileAvatar");
-    return savedAvatar || null;
-  });
+  const [profile, setProfile] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Статические посты
-  const staticPosts = [
-    profile1,
-    profile2,
-    profile3,
-    profile4,
-    profile5,
-    profile6,
-  ];
+  const loadProfileData = async () => {
+    try {
+      const profileData = await getProfile();
+      setProfile(profileData);
 
-  // Загружаем пользовательские посты из localStorage
-  const [userPosts, setUserPosts] = useState(() => {
-    const savedPosts = localStorage.getItem("userPosts");
-    return savedPosts ? JSON.parse(savedPosts) : [];
-  });
+      // Используем _id из profileData, так как он точно есть и в правильном формате
+      const userId = profileData?._id || currentUser?._id;
+      if (userId) {
+        console.log("Loading posts for user:", userId);
+        const postsData = await getUserPosts(userId);
+        console.log("Posts received:", postsData);
+        setPosts(postsData || []);
+      } else {
+        console.error("No userId found");
+        setPosts([]);
+      }
+    } catch (error) {
+      console.error("Failed to load profile:", error);
+      setPosts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Объединяем пользовательские посты со статическими
-  // Сначала пользовательские (новые), потом статические
-  const allPosts = [...userPosts, ...staticPosts];
-
-  const fullBio = "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
-  const shortBio = "БЕСПЛАТНЫЙ";
-
-  // Синхронизируем изменения аватара из localStorage
   useEffect(() => {
-    const handleStorageChange = () => {
-      const savedAvatar = localStorage.getItem("profileAvatar");
-      if (savedAvatar) {
-        setAvatarPreview(savedAvatar);
+    if (currentUser?._id) {
+      loadProfileData();
+    } else {
+      setLoading(false);
+    }
+  }, [currentUser?._id]);
+
+  // Слушаем событие создания нового поста
+  useEffect(() => {
+    const handlePostCreated = () => {
+      if (currentUser?._id) {
+        loadProfileData();
       }
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    // Также проверяем при монтировании
-    const savedAvatar = localStorage.getItem("profileAvatar");
-    if (savedAvatar) {
-      setAvatarPreview(savedAvatar);
-    }
-
+    window.addEventListener("postsUpdated", handlePostCreated);
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("postsUpdated", handlePostCreated);
     };
-  }, []);
-
-  // Слушаем обновления постов
-  useEffect(() => {
-    const handlePostsUpdate = () => {
-      const savedPosts = localStorage.getItem("userPosts");
-      if (savedPosts) {
-        setUserPosts(JSON.parse(savedPosts));
-      }
-    };
-
-    window.addEventListener("postsUpdated", handlePostsUpdate);
-
-    // Также проверяем при монтировании
-    const savedPosts = localStorage.getItem("userPosts");
-    if (savedPosts) {
-      setUserPosts(JSON.parse(savedPosts));
-    }
-
-    return () => {
-      window.removeEventListener("postsUpdated", handlePostsUpdate);
-    };
-  }, []);
+  }, [currentUser?._id]);
 
   const handleEditProfile = () => {
     navigate("/edit-profile");
@@ -108,34 +90,20 @@ const MyProfilePage = () => {
     setSelectedPostIndex(null);
   };
 
-  const handleDeletePost = (postId) => {
-    // Получаем существующие посты
-    const existingPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
-
-    // Удаляем пост с указанным ID
-    const updatedPosts = existingPosts.filter((post) => post.id !== postId);
-
-    // Сохраняем обновленный список
-    localStorage.setItem("userPosts", JSON.stringify(updatedPosts));
-
-    // Обновляем состояние
-    setUserPosts(updatedPosts);
-
-    // Если удаленный пост был открыт, закрываем модальное окно
-    if (isModalOpen && selectedPostIndex !== null) {
-      const currentPost = allPosts[selectedPostIndex];
-      if (
-        currentPost &&
-        typeof currentPost === "object" &&
-        currentPost.id === postId
-      ) {
+  const handleDeletePost = async (postId) => {
+    try {
+      // Вызываем API для удаления поста
+      await deletePost(postId);
+      // Обновляем список постов
+      setPosts((prev) => prev.filter((post) => (post._id || post.id) !== postId));
+      if (isModalOpen && selectedPostIndex !== null) {
         setIsModalOpen(false);
         setSelectedPostIndex(null);
       }
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      alert(error?.response?.data?.message || "Failed to delete post. Please try again.");
     }
-
-    // Отправляем событие для обновления
-    window.dispatchEvent(new Event("postsUpdated"));
   };
 
   const handleEditPost = (post) => {
@@ -148,16 +116,59 @@ const MyProfilePage = () => {
     setPostToEdit(null);
   };
 
-  const handleEditPostSave = () => {
-    // После сохранения редактированного поста обновляем список
-    const savedPosts = localStorage.getItem("userPosts");
-    if (savedPosts) {
-      setUserPosts(JSON.parse(savedPosts));
+  const handleEditPostSave = async () => {
+    // Перезагружаем данные
+    try {
+      const [profileData, postsData] = await Promise.all([
+        getProfile(),
+        getUserPosts(currentUser?._id),
+      ]);
+      setProfile(profileData);
+      setPosts(postsData || []);
+    } catch (error) {
+      console.error("Failed to reload data:", error);
     }
-    window.dispatchEvent(new Event("postsUpdated"));
     setIsEditModalOpen(false);
     setPostToEdit(null);
   };
+
+  if (loading) {
+    return (
+      <>
+        <Sidebar />
+        <div className={styles.pageWrapper}>
+          <div className={styles.content}>
+            <div className={styles.container}>Loading...</div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const displayProfile = profile || currentUser;
+  const avatarUrl = displayProfile?.avatar || profileLogo;
+  const username = displayProfile?.username || "username";
+  const bio = displayProfile?.bio || "";
+  const website = displayProfile?.website || "";
+  const postsCount = displayProfile?.postsCount || posts.length;
+  const followersCount = displayProfile?.followersCount || 0;
+  const followingCount = displayProfile?.followingCount || 0;
+
+  const bioLines = bio.split("\n").filter((line) => line.trim());
+  const fullBio = bioLines.join("\n");
+  const shortBio = bioLines.slice(0, 3).join("\n"); // Показываем первые 3 строки
+
+  const staticPosts = [
+    profile1,
+    profile2,
+    profile3,
+    profile4,
+    profile5,
+    profile6,
+  ];
+
+  // Используем посты из API, если они есть, иначе статические посты
+  const displayPosts = posts.length > 0 ? posts : staticPosts.map((img, idx) => ({ image: img, _id: `static_${idx}` }));
 
   return (
     <>
@@ -174,7 +185,7 @@ const MyProfilePage = () => {
                     className={styles.ringRainbow}
                   />
                   <img
-                    src={avatarPreview || profileLogo}
+                    src={avatarUrl}
                     alt="Profile"
                     className={styles.avatar}
                   />
@@ -182,7 +193,7 @@ const MyProfilePage = () => {
               </div>
               <div className={styles.profileInfo}>
                 <div className={styles.usernameSection}>
-                  <h2 className={styles.username}>itcareerhub</h2>
+                  <h2 className={styles.username}>{username}</h2>
                   <button
                     className={styles.editButton}
                     onClick={handleEditProfile}
@@ -192,70 +203,89 @@ const MyProfilePage = () => {
                 </div>
                 <div className={styles.stats}>
                   <div className={styles.statItem}>
-                    <span>{allPosts.length} posts</span>
+                    <span>{postsCount} posts</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>9 993 followers</span>
+                    <span>{followersCount} followers</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>59 following</span>
+                    <span>{followingCount} following</span>
                   </div>
                 </div>
                 <div className={styles.bioSection}>
                   <div className={styles.bio}>
-                    <p>
-                      • Гарантия помощи с трудоустройством в ведущие IT-компании
-                    </p>
-                    <p>• Выпускники зарабатывают от 45к евро</p>
-                    <p>
-                      {isExpanded ? fullBio : shortBio}
-                      {!isExpanded && (
-                        <span className={styles.moreLink}>
-                          {" ... "}
-                          <button
-                            className={styles.moreButton}
-                            onClick={() => setIsExpanded(true)}
-                          >
-                            more
-                          </button>
-                        </span>
-                      )}
-                      {isExpanded && (
-                        <span className={styles.moreLink}>
-                          {" "}
-                          <button
-                            className={styles.moreButton}
-                            onClick={() => setIsExpanded(false)}
-                          >
-                            less
-                          </button>
-                        </span>
-                      )}
-                    </p>
+                    {bioLines.length > 3 ? (
+                      <>
+                        {isExpanded ? (
+                          <>
+                            {bioLines.map((line, index) => (
+                              <p key={index}>{line}</p>
+                            ))}
+                            <p>
+                              <span className={styles.moreLink}>
+                                {" "}
+                                <button
+                                  className={styles.moreButton}
+                                  onClick={() => setIsExpanded(false)}
+                                >
+                                  less
+                                </button>
+                              </span>
+                            </p>
+                          </>
+                        ) : (
+                          <>
+                            {bioLines.slice(0, 3).map((line, index) => (
+                              <p key={index}>{line}</p>
+                            ))}
+                            <p>
+                              <span className={styles.moreLink}>
+                                {" ... "}
+                                <button
+                                  className={styles.moreButton}
+                                  onClick={() => setIsExpanded(true)}
+                                >
+                                  more
+                                </button>
+                              </span>
+                            </p>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      bioLines.map((line, index) => (
+                        <p key={index}>{line}</p>
+                      ))
+                    )}
                   </div>
-                  <div className={styles.linkContainer}>
-                    <img
-                      src={linkIcon}
-                      alt="Link icon"
-                      className={styles.linkIcon}
-                    />
-                    <a
-                      href="https://bit.ly/3rpiIbh"
-                      className={styles.externalLink}
-                    >
-                      bit.ly/3rpiIbh
-                    </a>
-                  </div>
+                  {website && (
+                    <div className={styles.linkContainer}>
+                      <img
+                        src={linkIcon}
+                        alt="Link icon"
+                        className={styles.linkIcon}
+                      />
+                      <a
+                        href={
+                          website.startsWith("http")
+                            ? website
+                            : `https://${website}`
+                        }
+                        className={styles.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {website}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             <div className={styles.postsGrid}>
-              {allPosts.map((post, index) => {
-                // Если это объект с полями image и description, это пользовательский пост
-                const postImage =
-                  typeof post === "object" && post.image ? post.image : post;
-                const postKey =
-                  typeof post === "object" && post.id ? post.id : index;
+              {displayPosts.map((post, index) => {
+                const postImage = post.image || profileLogo;
+                const postKey = post._id || index;
 
                 return (
                   <div
@@ -271,6 +301,9 @@ const MyProfilePage = () => {
                   </div>
                 );
               })}
+              {displayPosts.length === 0 && (
+                <div className={styles.noPosts}>No posts yet</div>
+              )}
             </div>
           </div>
         </div>
@@ -280,7 +313,7 @@ const MyProfilePage = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         postIndex={selectedPostIndex}
-        posts={allPosts}
+        posts={displayPosts}
         onDeletePost={handleDeletePost}
         onEditPost={handleEditPost}
       />

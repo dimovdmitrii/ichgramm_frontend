@@ -1,10 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styles from "./MessagesListModal.module.css";
-import sashaaAvatar from "../../assets/Images/sashaa.jpg";
-import nikitaAvatar from "../../assets/Images/nikita.jpg";
+import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
+import { selectUser } from "../../store/auth/authSelectors";
 
 const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) => {
+  const currentUser = useSelector(selectUser);
+  const [chats, setChats] = useState([]);
   useEffect(() => {
     if (isOpen) {
       // Сохраняем текущую позицию прокрутки
@@ -39,24 +42,75 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
 
   const navigate = useNavigate();
 
-  if (!isOpen) return null;
+  // Загружаем переписки из localStorage
+  useEffect(() => {
+    if (isOpen && currentUser?._id) {
+      const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
+      if (storedChats) {
+        try {
+          const parsedChats = JSON.parse(storedChats);
+          // Сортируем по времени последнего сообщения (новые сверху)
+          const sortedChats = parsedChats.sort((a, b) => {
+            const timeA = new Date(a.lastMessageTime || 0).getTime();
+            const timeB = new Date(b.lastMessageTime || 0).getTime();
+            return timeB - timeA;
+          });
+          setChats(sortedChats);
+        } catch (error) {
+          console.error("Failed to parse stored chats:", error);
+          setChats([]);
+        }
+      } else {
+        setChats([]);
+      }
+    }
+  }, [isOpen, currentUser?._id]);
 
-  const chats = [
-    {
-      id: 1,
-      username: "nikiita",
-      lastMessage: "Nikiita sent a message.",
-      time: "2 wek",
-      avatar: nikitaAvatar,
-    },
-    {
-      id: 2,
-      username: "sashaa",
-      lastMessage: "Sashaa sent a message.",
-      time: "2 wek",
-      avatar: sashaaAvatar,
-    },
-  ];
+  // Слушаем события обновления переписок
+  useEffect(() => {
+    const handleChatsUpdated = () => {
+      if (currentUser?._id) {
+        const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
+        if (storedChats) {
+          try {
+            const parsedChats = JSON.parse(storedChats);
+            const sortedChats = parsedChats.sort((a, b) => {
+              const timeA = new Date(a.lastMessageTime || 0).getTime();
+              const timeB = new Date(b.lastMessageTime || 0).getTime();
+              return timeB - timeA;
+            });
+            setChats(sortedChats);
+          } catch (error) {
+            console.error("Failed to parse stored chats:", error);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("chatsUpdated", handleChatsUpdated);
+    return () => {
+      window.removeEventListener("chatsUpdated", handleChatsUpdated);
+    };
+  }, [currentUser?._id]);
+
+  // Форматируем время для отображения
+  const formatTime = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "now";
+    if (diffMins < 60) return `${diffMins}m`;
+    if (diffHours < 24) return `${diffHours}h`;
+    if (diffDays < 7) return `${diffDays}d`;
+    return date.toLocaleDateString();
+  };
+
+  if (!isOpen) return null;
 
   const handleChatClick = (chat) => {
     if (onSelectChat) {
@@ -75,35 +129,43 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
       <div className={styles.modal}>
         <h2 className={styles.title}>itcareerhub</h2>
         <div className={styles.chatsList}>
-          {chats.map((chat) => (
-            <button
-              key={chat.id}
-              onClick={() => handleChatClick(chat)}
-              className={`${styles.chatItem} ${
-                selectedChatId === chat.id ? styles.active : ""
-              }`}
-            >
-              <img
-                src={chat.avatar}
-                alt={chat.username}
-                className={styles.avatar}
-                onClick={(event) => handleOpenProfile(event, chat.username)}
-              />
-              <div className={styles.chatInfo}>
-                <div className={styles.chatHeader}>
-                  <span
-                    className={styles.username}
-                    onClick={(event) => handleOpenProfile(event, chat.username)}
-                  >
-                    {chat.username}
-                  </span>
-                  <span className={styles.separator}>·</span>
-                  <span className={styles.time}>{chat.time}</span>
+          {chats.length > 0 ? (
+            chats.map((chat) => (
+              <button
+                key={chat.id || chat.username}
+                onClick={() => handleChatClick(chat)}
+                className={`${styles.chatItem} ${
+                  selectedChatId === chat.id ? styles.active : ""
+                }`}
+              >
+                <img
+                  src={chat.avatar || profileLogo}
+                  alt={chat.username}
+                  className={styles.avatar}
+                  onClick={(event) => handleOpenProfile(event, chat.username)}
+                />
+                <div className={styles.chatInfo}>
+                  <div className={styles.chatHeader}>
+                    <span
+                      className={styles.username}
+                      onClick={(event) => handleOpenProfile(event, chat.username)}
+                    >
+                      {chat.username}
+                    </span>
+                    <span className={styles.separator}>·</span>
+                    <span className={styles.time}>
+                      {formatTime(chat.lastMessageTime)}
+                    </span>
+                  </div>
+                  <div className={styles.lastMessage}>
+                    {chat.lastMessage || "No messages yet"}
+                  </div>
                 </div>
-                <div className={styles.lastMessage}>{chat.lastMessage}</div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))
+          ) : (
+            <div className={styles.noChats}>No conversations yet</div>
+          )}
         </div>
       </div>
     </>

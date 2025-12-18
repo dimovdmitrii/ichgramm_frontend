@@ -72,8 +72,8 @@ const MyPostModal = ({
     "Потрясающие новости пришли к нам из Черногории! Проект по поддержке бездомных животных TailBook, в разработке которого участвуют сразу 9 наших стажёров, будет представлен на Web Summit 2024 в Португалии🔥\n\nМы поздравляем наших студентов, приглашаем вас на Web Summit и предлагаем стать частью огромного сообщества крутых специалистов, помогающих развивать и очищать нашу планету.\n\nЗанимайте место на бесплатной консультации по ссылке в шапке профиля, чтобы узнать подробности!";
 
   const postDescription =
-    isUserPost && currentPost.description
-      ? currentPost.description
+    isUserPost && (currentPost.content || currentPost.description)
+      ? (currentPost.content || currentPost.description)
       : defaultDescription;
 
   // Вычисляем время публикации
@@ -140,8 +140,10 @@ const MyPostModal = ({
   };
 
   const handleDelete = () => {
-    if (onDeletePost && isUserPost && currentPost.id) {
-      onDeletePost(currentPost.id);
+    // Используем _id для постов из API или id для старых постов
+    const postId = currentPost?._id || currentPost?.id;
+    if (onDeletePost && isUserPost && postId) {
+      onDeletePost(postId);
       setIsEditModalOpen(false);
       onClose();
     } else {

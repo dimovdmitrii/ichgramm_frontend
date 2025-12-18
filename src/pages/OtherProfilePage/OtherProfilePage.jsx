@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import ChatModal from "../../modules/ChatModal/ChatModal";
-import OtherPostModal from "../../modules/OtherPostModal/OtherPostModal";
+import MyPostModal from "../../modules/MyPostModal/MyPostModal";
 
 import styles from "./OtherProfilePage.module.css";
 
@@ -19,6 +19,7 @@ import profile5 from "../../assets/Images/UsersProfile/Profile_Post5.png";
 import profile6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
 import nikitaAvatar from "../../assets/Images/nikita.jpg";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
+import { getProfileByUsername, getUserPosts } from "../../shared/api/users-api";
 
 const OtherProfilePage = () => {
   const { username: routeUsername } = useParams();
@@ -28,14 +29,12 @@ const OtherProfilePage = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const [followersCount, setFollowersCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
-
-  const avatarSrc = useMemo(() => {
-    if (username === "nikiita") return nikitaAvatar;
-    if (username === "sashaa") return sashaaAvatar;
-    return profileLogo;
-  }, [username]);
+  const [profile, setProfile] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const staticPosts = [
     profile1,
@@ -46,36 +45,79 @@ const OtherProfilePage = () => {
     profile6,
   ];
 
-  const fullBio = "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
-  const shortBio = "БЕСПЛАТНЫЙ";
-
   useEffect(() => {
-    const savedFollowers = localStorage.getItem(
-      `otherProfile_followers_${username}`
-    );
-    const savedIsFollowing = localStorage.getItem(
-      `otherProfile_isFollowing_${username}`
-    );
+    const loadProfileData = async () => {
+      try {
+        const profileData = await getProfileByUsername(username);
+        setProfile(profileData);
 
-    setFollowersCount(savedFollowers ? Number(savedFollowers) || 0 : 0);
-    setIsFollowing(savedIsFollowing === "true");
+        // Обновляем followers и isFollowing из данных API
+        if (profileData) {
+          setFollowersCount(profileData.followersCount || 0);
+          setIsFollowing(profileData.isFollowing || false);
+        }
+
+        const userId = profileData?._id;
+        if (userId) {
+          console.log("Loading posts for user:", userId);
+          const postsData = await getUserPosts(userId);
+          console.log("Posts received:", postsData);
+          setPosts(postsData || []);
+        } else {
+          console.error("No userId found");
+          setPosts([]);
+        }
+      } catch (error) {
+        console.error("Failed to load profile:", error);
+        setPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (username) {
+      loadProfileData();
+    } else {
+      setLoading(false);
+    }
   }, [username]);
 
-  const handleToggleFollow = () => {
-    setFollowersCount((prev) => {
-      const next = isFollowing ? Math.max(prev - 1, 0) : prev + 1;
-      localStorage.setItem(`otherProfile_followers_${username}`, String(next));
-      return next;
-    });
+  // Убрали сохранение в localStorage - данные должны приходить с API
+  // useEffect для загрузки followers и isFollowing из API уже есть в loadProfileData
 
-    setIsFollowing((prev) => {
-      const next = !prev;
-      localStorage.setItem(
-        `otherProfile_isFollowing_${username}`,
-        String(next)
-      );
-      return next;
+  const avatarSrc = useMemo(() => {
+    if (profile?.avatar) return profile.avatar;
+    if (username === "nikiita") return nikitaAvatar;
+    if (username === "sashaa") return sashaaAvatar;
+    return profileLogo;
+  }, [profile, username]);
+
+  const displayUsername = profile?.username || username;
+  const bio = profile?.bio || "";
+  const website = profile?.website || "";
+  const postsCount = profile?.postsCount || posts.length;
+  const profileFollowersCount = profile?.followersCount || 0;
+  const followingCount = profile?.followingCount || 0;
+
+  const bioLines = bio ? bio.split("\n").filter((line) => line.trim()) : [];
+  const fullBio = bioLines.join("\n");
+  const shortBio = bioLines[0] || "";
+
+  // Fallback to static bio if no bio from API
+  const displayFullBio = fullBio || "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
+  const displayShortBio = shortBio || "БЕСПЛАТНЫЙ";
+
+  const handleToggleFollow = () => {
+    // Обновляем состояние локально (оптимистичное обновление)
+    // Данные будут обновлены при следующей загрузке профиля с сервера
+    setFollowersCount((prev) => {
+      return isFollowing ? Math.max(prev - 1, 0) : prev + 1;
     });
+    setIsFollowing((prev) => !prev);
+
+    // TODO: Вызвать API для подписки/отписки, когда будет готов endpoint
+    // Пока просто обновляем локальное состояние
+    // Данные должны приходить с сервера при загрузке профиля
   };
 
   const handleOpenChat = () => {
@@ -86,24 +128,37 @@ const OtherProfilePage = () => {
     setIsChatOpen(false);
   };
 
-  const handlePostClick = (post) => {
-    setSelectedPost(post);
+  const handlePostClick = (index) => {
+    setSelectedPostIndex(index);
     setIsPostModalOpen(true);
   };
 
   const handleClosePostModal = () => {
     setIsPostModalOpen(false);
-    setSelectedPost(null);
+    setSelectedPostIndex(null);
   };
 
   const chatUser = useMemo(
     () => ({
-      id: 1,
-      username,
+      id: profile?._id || 1,
+      username: displayUsername,
       avatar: avatarSrc,
     }),
-    [username, avatarSrc]
+    [profile, displayUsername, avatarSrc]
   );
+
+  if (loading) {
+    return (
+      <>
+        <Sidebar />
+        <div className={styles.pageWrapper}>
+          <div className={styles.content}>
+            <div className={styles.container}>Loading...</div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -121,14 +176,14 @@ const OtherProfilePage = () => {
                   />
                   <img
                     src={avatarSrc}
-                    alt={username}
+                    alt={displayUsername}
                     className={styles.avatar}
                   />
                 </div>
               </div>
               <div className={styles.profileInfo}>
                 <div className={styles.usernameSection}>
-                  <h2 className={styles.username}>{username}</h2>
+                  <h2 className={styles.username}>{displayUsername}</h2>
                   <button
                     className={styles.followButton}
                     onClick={handleToggleFollow}
@@ -144,77 +199,162 @@ const OtherProfilePage = () => {
                 </div>
                 <div className={styles.stats}>
                   <div className={styles.statItem}>
-                    <span>{staticPosts.length} posts</span>
+                    <span>{postsCount} posts</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>{followersCount} followers</span>
+                    <span>
+                      {followersCount || profileFollowersCount} followers
+                    </span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>59 following</span>
+                    <span>{followingCount} following</span>
                   </div>
                 </div>
                 <div className={styles.bioSection}>
                   <div className={styles.bio}>
-                    <p>
-                      • Гарантия помощи с трудоустройством в ведущие IT-компании
-                    </p>
-                    <p>• Выпускники зарабатывают от 45к евро</p>
-                    <p>
-                      {isExpanded ? fullBio : shortBio}
-                      {!isExpanded && (
-                        <span className={styles.moreLink}>
-                          {" ... "}
-                          <button
-                            className={styles.moreButton}
-                            onClick={() => setIsExpanded(true)}
-                          >
-                            more
-                          </button>
-                        </span>
-                      )}
-                      {isExpanded && (
-                        <span className={styles.moreLink}>
-                          {" "}
-                          <button
-                            className={styles.moreButton}
-                            onClick={() => setIsExpanded(false)}
-                          >
-                            less
-                          </button>
-                        </span>
-                      )}
-                    </p>
+                    {bioLines.length > 0 ? (
+                      <>
+                        {bioLines.map((line, index) => (
+                          <p key={index}>{line}</p>
+                        ))}
+                        {bioLines.length > 1 && (
+                          <p>
+                            {isExpanded ? displayFullBio : displayShortBio}
+                            {!isExpanded && (
+                              <span className={styles.moreLink}>
+                                {" ... "}
+                                <button
+                                  className={styles.moreButton}
+                                  onClick={() => setIsExpanded(true)}
+                                >
+                                  more
+                                </button>
+                              </span>
+                            )}
+                            {isExpanded && (
+                              <span className={styles.moreLink}>
+                                {" "}
+                                <button
+                                  className={styles.moreButton}
+                                  onClick={() => setIsExpanded(false)}
+                                >
+                                  less
+                                </button>
+                              </span>
+                            )}
+                          </p>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <p>
+                          • Гарантия помощи с трудоустройством в ведущие
+                          IT-компании
+                        </p>
+                        <p>• Выпускники зарабатывают от 45к евро</p>
+                        <p>
+                          {isExpanded ? displayFullBio : displayShortBio}
+                          {!isExpanded && (
+                            <span className={styles.moreLink}>
+                              {" ... "}
+                              <button
+                                className={styles.moreButton}
+                                onClick={() => setIsExpanded(true)}
+                              >
+                                more
+                              </button>
+                            </span>
+                          )}
+                          {isExpanded && (
+                            <span className={styles.moreLink}>
+                              {" "}
+                              <button
+                                className={styles.moreButton}
+                                onClick={() => setIsExpanded(false)}
+                              >
+                                less
+                              </button>
+                            </span>
+                          )}
+                        </p>
+                      </>
+                    )}
                   </div>
-                  <div className={styles.linkContainer}>
-                    <img
-                      src={linkIcon}
-                      alt="Link icon"
-                      className={styles.linkIcon}
-                    />
-                    <a
-                      href="https://bit.ly/3rpiIbh"
-                      className={styles.externalLink}
-                    >
-                      bit.ly/3rpiIbh
-                    </a>
-                  </div>
+                  {website && (
+                    <div className={styles.linkContainer}>
+                      <img
+                        src={linkIcon}
+                        alt="Link icon"
+                        className={styles.linkIcon}
+                      />
+                      <a
+                        href={
+                          website.startsWith("http")
+                            ? website
+                            : `https://${website}`
+                        }
+                        className={styles.externalLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {website}
+                      </a>
+                    </div>
+                  )}
+                  {!website && (
+                    <div className={styles.linkContainer}>
+                      <img
+                        src={linkIcon}
+                        alt="Link icon"
+                        className={styles.linkIcon}
+                      />
+                      <a
+                        href="https://bit.ly/3rpiIbh"
+                        className={styles.externalLink}
+                      >
+                        bit.ly/3rpiIbh
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
             <div className={styles.postsGrid}>
-              {staticPosts.map((post, index) => (
-                <div
-                  key={index}
-                  className={styles.postItem}
-                  onClick={() => handlePostClick(post)}
-                >
-                  <img
-                    src={post}
-                    alt={`Post ${index + 1}`}
-                    className={styles.postImage}
-                  />
-                </div>
-              ))}
+              {posts.length > 0
+                ? posts.map((post, index) => {
+                    const postImage = post.image || profileLogo;
+                    const postKey = post._id || index;
+
+                    return (
+                      <div
+                        key={postKey}
+                        className={styles.postItem}
+                        onClick={() => handlePostClick(index)}
+                      >
+                        <img
+                          src={postImage}
+                          alt={`Post ${index + 1}`}
+                          className={styles.postImage}
+                        />
+                      </div>
+                    );
+                  })
+                : staticPosts.map((post, index) => (
+                    <div
+                      key={index}
+                      className={styles.postItem}
+                      onClick={() => handlePostClick(index)}
+                    >
+                      <img
+                        src={post}
+                        alt={`Post ${index + 1}`}
+                        className={styles.postImage}
+                      />
+                    </div>
+                  ))}
+              {posts.length === 0 && staticPosts.length === 0 && (
+                <div className={styles.noPosts}>No posts yet</div>
+              )}
             </div>
           </div>
         </div>
@@ -225,11 +365,15 @@ const OtherProfilePage = () => {
         onClose={handleCloseChat}
         chat={chatUser}
       />
-      <OtherPostModal
+      <MyPostModal
         isOpen={isPostModalOpen}
         onClose={handleClosePostModal}
-        post={selectedPost}
-        username={username}
+        postIndex={selectedPostIndex}
+        posts={
+          posts.length > 0
+            ? posts
+            : staticPosts.map((img, idx) => ({ image: img, _id: idx }))
+        }
       />
     </>
   );

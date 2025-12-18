@@ -6,7 +6,7 @@
   bottom: 158px;
   background: rgba(0, 0, 0, 0.65);
   z-index: 202;
-  pointer-events: none;
+  cursor: pointer;
 }
 
 .modal {

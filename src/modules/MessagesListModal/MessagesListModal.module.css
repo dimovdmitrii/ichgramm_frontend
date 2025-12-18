@@ -117,3 +117,10 @@
   line-height: 16px;
   height: 16px;
 }
+
+.noChats {
+  padding: 24px;
+  text-align: center;
+  color: #737373;
+  font-size: 14px;
+}
