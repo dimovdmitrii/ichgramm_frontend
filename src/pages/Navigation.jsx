@@ -8,13 +8,12 @@ import MyProfilePage from "./MyProfilePage/MyProfilePage";
 import MyProfileEdit from "./EditProfile/MyProfileEdit";
 import ExplorePage from "./ExplorePage/ExplorePage";
 import ResetPage from "./Authenticate/ResetPage/ResetPage";
-import OtherPostPage from "./OtherProfilePage/OtherPostPage";
+
 import OtherProfilePage from "./OtherProfilePage/OtherProfilePage";
 import PrivacyPolicy from "./PrivacyTerms/PrivacyPolicy/PrivacyPolicy";
 import Terms from "./PrivacyTerms/Terms/Terms";
 import CookiesPolicy from "./PrivacyTerms/CookiesPolicy/CookiesPolicy";
 import LearnMore from "./PrivacyTerms/LearnMore/LearnMore";
-
 import PublicRoute from "../shared/components/PublicRoute/PublicRoute";
 import PrivateRoute from "../shared/components/PrivateRoute/PrivateRoute";
 
@@ -35,8 +34,7 @@ const Navigation = () => {
         <Route path="/profile" element={<MyProfilePage />} />
         <Route path="/my-profile" element={<MyProfilePage />} />
         <Route path="/edit-profile" element={<MyProfileEdit />} />
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/other-posts" element={<OtherPostPage />} />
+        <Route path="/explore" element={<ExplorePage />} />        
         <Route path="/other-profile/:username" element={<OtherProfilePage />} />
       </Route>
       <Route path="*" element={<NotFoundPage />} />

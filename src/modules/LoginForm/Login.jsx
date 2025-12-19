@@ -1,8 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import LoginForm from "./LoginForm";
-import { loginUser } from "../../store/auth/authOperations";
+import { loginUser, getCurrentUser } from "../../store/auth/authOperations";
 import {
   selectLoading,
   selectError,
@@ -20,8 +21,15 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const handleLogin = async (payload) => {
-    dispatch(loginUser(payload));
+    await dispatch(loginUser(payload));
   };
+
+  // После успешного логина загружаем полную информацию о пользователе
+  useEffect(() => {
+    if (isLoginSuccess && accessToken && !user) {
+      dispatch(getCurrentUser());
+    }
+  }, [isLoginSuccess, accessToken, user, dispatch]);
 
   // Если пользователь уже залогинен, не показываем страницу логина
   if (user || (isLoginSuccess && accessToken)) {

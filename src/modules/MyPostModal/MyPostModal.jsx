@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styles from "./MyPostModal.module.css";
 import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import ringRainbow from "../../assets/Images/ring-rainbow.png";
@@ -19,6 +20,7 @@ import modalImage4 from "../../assets/Images/modalProfilePictures/profile_modal4
 import modalImage5 from "../../assets/Images/modalProfilePictures/profile_modal5.jpg";
 import modalImage6 from "../../assets/Images/modalProfilePictures/profile_modal6.jpg";
 import EditPostModal from "../EditPostModal/EditPostModal";
+import { selectUser } from "../../store/auth/authSelectors";
 
 const MyPostModal = ({
   isOpen,
@@ -27,10 +29,25 @@ const MyPostModal = ({
   posts,
   onEditPost,
   onDeletePost,
+  username, // username автора поста
+  avatar, // avatar автора поста
+  isFollowing, // подписан ли текущий пользователь на автора поста
+  onFollow, // функция для подписки/отписки
+  isOwnPost, // является ли пост собственным
 }) => {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const currentUser = useSelector(selectUser);
+
+  // Состояние для подписки (используем переданное или определяем локально)
+  const [followingState, setFollowingState] = useState(isFollowing || false);
+
+  useEffect(() => {
+    if (isFollowing !== undefined) {
+      setFollowingState(isFollowing);
+    }
+  }, [isFollowing]);
 
   // Статические изображения для обратной совместимости
   const modalImages = [
@@ -57,6 +74,27 @@ const MyPostModal = ({
 
   // Определяем текущий пост
   const currentPost = posts && posts[postIndex];
+
+  // Определяем информацию об авторе поста (после определения currentPost)
+  const postAuthor = {
+    username:
+      username ||
+      currentPost?.author?.username ||
+      currentPost?.user?.username ||
+      "itcareerhub",
+    avatar:
+      avatar ||
+      currentPost?.author?.avatar ||
+      currentPost?.user?.avatar ||
+      profileLogo,
+  };
+
+  // Определяем, является ли это постом текущего пользователя
+  const isPostOwner =
+    isOwnPost !== undefined
+      ? isOwnPost
+      : currentUser?.username === postAuthor.username ||
+        currentUser?._id === currentPost?.author?._id;
   const isUserPost =
     currentPost && typeof currentPost === "object" && currentPost.image;
 
@@ -73,7 +111,7 @@ const MyPostModal = ({
 
   const postDescription =
     isUserPost && (currentPost.content || currentPost.description)
-      ? (currentPost.content || currentPost.description)
+      ? currentPost.content || currentPost.description
       : defaultDescription;
 
   // Вычисляем время публикации
@@ -179,6 +217,29 @@ const MyPostModal = ({
     }
   };
 
+  const handleFollowClick = async (e) => {
+    e.stopPropagation();
+    if (onFollow) {
+      // Если передана функция onFollow, используем её
+      // Используем актуальное состояние из пропсов, а не локальное
+      const currentState =
+        isFollowing !== undefined ? isFollowing : followingState;
+      const newFollowingState = !currentState;
+
+      // Оптимистичное обновление локального состояния
+      setFollowingState(newFollowingState);
+
+      try {
+        await onFollow(newFollowingState);
+        // После успешного вызова состояние будет обновлено через пропсы
+      } catch (error) {
+        // Откатываем состояние при ошибке
+        setFollowingState(currentState);
+        console.error("Failed to follow/unfollow:", error);
+      }
+    }
+  };
+
   return (
     <>
       <div className={styles.overlay} onClick={onClose} />
@@ -200,20 +261,30 @@ const MyPostModal = ({
                   className={styles.ringRainbow}
                 />
                 <img
-                  src={profileLogo}
-                  alt="Profile"
+                  src={postAuthor.avatar}
+                  alt={postAuthor.username}
                   className={styles.avatar}
                 />
               </div>
-              <span className={styles.username}>itcareerhub</span>
+              <span className={styles.username}>{postAuthor.username}</span>
+              {!isPostOwner && (
+                <button
+                  className={styles.followButton}
+                  onClick={handleFollowClick}
+                >
+                  {followingState ? "Unfollow" : "Follow"}
+                </button>
+              )}
             </div>
-            <button className={styles.moreButton} onClick={handleMoreClick}>
-              <img
-                src={optionButtonIcon}
-                alt="More options"
-                className={styles.optionIcon}
-              />
-            </button>
+            {isPostOwner && (
+              <button className={styles.moreButton} onClick={handleMoreClick}>
+                <img
+                  src={optionButtonIcon}
+                  alt="More options"
+                  className={styles.optionIcon}
+                />
+              </button>
+            )}
           </div>
 
           <div className={styles.commentsSection}>
@@ -226,8 +297,8 @@ const MyPostModal = ({
                     className={styles.ringRainbow}
                   />
                   <img
-                    src={profileLogo}
-                    alt="Profile"
+                    src={postAuthor.avatar}
+                    alt={postAuthor.username}
                     className={styles.avatar}
                   />
                 </div>
@@ -236,8 +307,15 @@ const MyPostModal = ({
                     {postDescription ? (
                       <>
                         <div className={styles.firstLine}>
-                          <Link to="/my-profile" className={styles.username}>
-                            itcareerhub
+                          <Link
+                            to={
+                              isPostOwner
+                                ? "/profile"
+                                : `/other-profile/${postAuthor.username}`
+                            }
+                            className={styles.username}
+                          >
+                            {postAuthor.username}
                           </Link>
                           <span className={styles.firstParagraph}>
                             {postDescription.split("\n\n")[0]}
@@ -254,8 +332,15 @@ const MyPostModal = ({
                       </>
                     ) : (
                       <div className={styles.firstLine}>
-                        <Link to="/my-profile" className={styles.username}>
-                          itcareerhub
+                        <Link
+                          to={
+                            isPostOwner
+                              ? "/profile"
+                              : `/other-profile/${postAuthor.username}`
+                          }
+                          className={styles.username}
+                        >
+                          {postAuthor.username}
                         </Link>
                       </div>
                     )}

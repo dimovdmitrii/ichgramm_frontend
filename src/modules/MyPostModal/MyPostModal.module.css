@@ -104,6 +104,28 @@
   line-height: 15px;
 }
 
+.followButton {
+  height: 28px;
+  padding: 0 12px;
+  background: #efefef;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: 600;
+  color: #000000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  transition: background 0.2s;
+}
+
+.followButton:hover {
+  background: #e0e0e0;
+}
+
 .moreButton {
   background: none;
   border: none;

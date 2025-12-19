@@ -15,51 +15,64 @@ import profile3 from "../../assets/Images/UsersProfile/Profile_Post3.png";
 import profile4 from "../../assets/Images/UsersProfile/Profile_Post4.png";
 import profile5 from "../../assets/Images/UsersProfile/Profile_Post5.png";
 import profile6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
-import { getProfile, getUserPosts, deletePost } from "../../shared/api/users-api";
+import {
+  getProfile,
+  getUserPosts,
+  deletePost,
+} from "../../shared/api/users-api";
 import { selectUser } from "../../store/auth/authSelectors";
 
 const MyProfilePage = () => {
   const navigate = useNavigate();
   const currentUser = useSelector(selectUser);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
   const [postToEdit, setPostToEdit] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [posts, setPosts] = useState([]);
+  const [profile, setProfileState] = useState(null);
+  const [posts, setPostsState] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadProfileData = async () => {
     try {
-      const profileData = await getProfile();
-      setProfile(profileData);
+      setLoading(true);
 
-      // Используем _id из profileData, так как он точно есть и в правильном формате
+      // Загружаем профиль
+      const profileData = await getProfile();
+      setProfileState(profileData);
+
+      // Используем _id из profileData для загрузки постов
       const userId = profileData?._id || currentUser?._id;
       if (userId) {
-        console.log("Loading posts for user:", userId);
-        const postsData = await getUserPosts(userId);
-        console.log("Posts received:", postsData);
-        setPosts(postsData || []);
+        try {
+          const postsData = await getUserPosts(userId);
+          console.log("Loading posts for user:", userId);
+          console.log("Posts received:", postsData);
+          setPostsState(postsData || []);
+        } catch (postsError) {
+          console.error("Failed to load posts:", postsError);
+          setPostsState([]);
+        }
       } else {
         console.error("No userId found");
-        setPosts([]);
+        setPostsState([]);
       }
     } catch (error) {
       console.error("Failed to load profile:", error);
-      setPosts([]);
+      setProfileState(null);
+      setPostsState([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (currentUser?._id) {
-      loadProfileData();
-    } else {
-      setLoading(false);
-    }
+    // Загружаем данные профиля независимо от currentUser
+    // getProfile() использует токен из заголовков, поэтому должен работать
+    loadProfileData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?._id]);
 
   // Слушаем событие создания нового поста
@@ -73,6 +86,20 @@ const MyProfilePage = () => {
     window.addEventListener("postsUpdated", handlePostCreated);
     return () => {
       window.removeEventListener("postsUpdated", handlePostCreated);
+    };
+  }, [currentUser?._id]);
+
+  // Слушаем событие обновления профиля (например, при подписке/отписке)
+  useEffect(() => {
+    const handleProfileUpdated = () => {
+      if (currentUser?._id) {
+        loadProfileData();
+      }
+    };
+
+    window.addEventListener("profileUpdated", handleProfileUpdated);
+    return () => {
+      window.removeEventListener("profileUpdated", handleProfileUpdated);
     };
   }, [currentUser?._id]);
 
@@ -95,14 +122,19 @@ const MyProfilePage = () => {
       // Вызываем API для удаления поста
       await deletePost(postId);
       // Обновляем список постов
-      setPosts((prev) => prev.filter((post) => (post._id || post.id) !== postId));
+      setPosts((prev) =>
+        prev.filter((post) => (post._id || post.id) !== postId)
+      );
       if (isModalOpen && selectedPostIndex !== null) {
         setIsModalOpen(false);
         setSelectedPostIndex(null);
       }
     } catch (error) {
       console.error("Failed to delete post:", error);
-      alert(error?.response?.data?.message || "Failed to delete post. Please try again.");
+      alert(
+        error?.response?.data?.message ||
+          "Failed to delete post. Please try again."
+      );
     }
   };
 
@@ -168,7 +200,10 @@ const MyProfilePage = () => {
   ];
 
   // Используем посты из API, если они есть, иначе статические посты
-  const displayPosts = posts.length > 0 ? posts : staticPosts.map((img, idx) => ({ image: img, _id: `static_${idx}` }));
+  const displayPosts =
+    posts.length > 0
+      ? posts
+      : staticPosts.map((img, idx) => ({ image: img, _id: `static_${idx}` }));
 
   return (
     <>
@@ -253,9 +288,7 @@ const MyProfilePage = () => {
                         )}
                       </>
                     ) : (
-                      bioLines.map((line, index) => (
-                        <p key={index}>{line}</p>
-                      ))
+                      bioLines.map((line, index) => <p key={index}>{line}</p>)
                     )}
                   </div>
                   {website && (
@@ -316,6 +349,9 @@ const MyProfilePage = () => {
         posts={displayPosts}
         onDeletePost={handleDeletePost}
         onEditPost={handleEditPost}
+        username={currentUser?.username || profile?.username || "itcareerhub"}
+        avatar={profile?.avatar || profileLogo}
+        isOwnPost={true}
       />
       <CreatePostModal
         isOpen={isEditModalOpen}

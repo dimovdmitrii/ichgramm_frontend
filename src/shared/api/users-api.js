@@ -45,3 +45,40 @@ export const deletePost = async (postId) => {
   const { data } = await instance.delete(`/posts/${postId}`);
   return data;
 };
+
+export const followUser = async (username) => {
+  const { data } = await instance.post(`/follows/${username}`);
+  return data;
+};
+
+export const unfollowUser = async (username) => {
+  const { data } = await instance.delete(`/follows/${username}`);
+  return data;
+};
+
+// Messages API
+export const getConversation = async (username) => {
+  const { data } = await instance.get(`/messages/conversation/${username}`);
+  return data;
+};
+
+export const getChats = async () => {
+  const { data } = await instance.get("/messages/chats");
+  return data;
+};
+
+// Recent Searches API
+export const getRecentSearches = async () => {
+  const { data } = await instance.get("/users/recent-searches");
+  return data;
+};
+
+export const addRecentSearch = async (username) => {
+  const { data } = await instance.post("/users/recent-searches", { username });
+  return data;
+};
+
+export const clearRecentSearches = async () => {
+  const { data } = await instance.delete("/users/recent-searches");
+  return data;
+};

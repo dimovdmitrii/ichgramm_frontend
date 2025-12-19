@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styles from "./MessagesListModal.module.css";
 import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import { selectUser } from "../../store/auth/authSelectors";
+import { getChats } from "../../shared/api/users-api";
 
-const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) => {
+const MessagesListModal = ({
+  isOpen,
+  onClose,
+  onSelectChat,
+  selectedChatId,
+  hasOpenChat = false, // Флаг, указывающий, открыт ли чат
+}) => {
   const currentUser = useSelector(selectUser);
   const [chats, setChats] = useState([]);
   useEffect(() => {
@@ -40,48 +46,134 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
     };
   }, [isOpen]);
 
-  const navigate = useNavigate();
-
-  // Загружаем переписки из localStorage
+  // Загружаем переписки из API и localStorage
   useEffect(() => {
-    if (isOpen && currentUser?._id) {
-      const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
-      if (storedChats) {
+    const loadChats = async () => {
+      if (isOpen && currentUser?._id) {
         try {
-          const parsedChats = JSON.parse(storedChats);
+          // Загружаем чаты из API
+          const apiChats = await getChats();
+
+          // Преобразуем формат API в формат компонента
+          const formattedChats = apiChats.map((chat) => ({
+            id: chat.userId,
+            username: chat.username,
+            avatar: chat.avatar || null,
+            lastMessage: chat.lastMessage || "",
+            lastMessageTime: chat.lastMessageTime || new Date().toISOString(),
+          }));
+
+          // Объединяем с данными из localStorage (для обратной совместимости)
+          const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
+          if (storedChats) {
+            try {
+              const parsedChats = JSON.parse(storedChats);
+              // Создаем Map для быстрого поиска
+              const apiChatsMap = new Map(
+                formattedChats.map((c) => [c.username, c])
+              );
+
+              // Объединяем: приоритет у API данных, но сохраняем локальные если их нет в API
+              parsedChats.forEach((localChat) => {
+                if (!apiChatsMap.has(localChat.username)) {
+                  formattedChats.push(localChat);
+                }
+              });
+            } catch (error) {
+              console.error("Failed to parse stored chats:", error);
+            }
+          }
+
           // Сортируем по времени последнего сообщения (новые сверху)
-          const sortedChats = parsedChats.sort((a, b) => {
+          const sortedChats = formattedChats.sort((a, b) => {
+            const timeA = new Date(a.lastMessageTime || 0).getTime();
+            const timeB = new Date(b.lastMessageTime || 0).getTime();
+            return timeB - timeA;
+          });
+
+          setChats(sortedChats);
+        } catch (error) {
+          console.error("Failed to load chats from API:", error);
+          // Fallback на localStorage
+          const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
+          if (storedChats) {
+            try {
+              const parsedChats = JSON.parse(storedChats);
+              const sortedChats = parsedChats.sort((a, b) => {
+                const timeA = new Date(a.lastMessageTime || 0).getTime();
+                const timeB = new Date(b.lastMessageTime || 0).getTime();
+                return timeB - timeA;
+              });
+              setChats(sortedChats);
+            } catch (parseError) {
+              console.error("Failed to parse stored chats:", parseError);
+              setChats([]);
+            }
+          } else {
+            setChats([]);
+          }
+        }
+      }
+    };
+
+    loadChats();
+  }, [isOpen, currentUser?._id]);
+
+  // Слушаем события обновления переписок
+  useEffect(() => {
+    const handleChatsUpdated = async () => {
+      if (currentUser?._id) {
+        try {
+          // Загружаем актуальные данные из API
+          const apiChats = await getChats();
+          const formattedChats = apiChats.map((chat) => ({
+            id: chat.userId,
+            username: chat.username,
+            avatar: chat.avatar || null,
+            lastMessage: chat.lastMessage || "",
+            lastMessageTime: chat.lastMessageTime || new Date().toISOString(),
+          }));
+
+          // Объединяем с localStorage
+          const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
+          if (storedChats) {
+            try {
+              const parsedChats = JSON.parse(storedChats);
+              const apiChatsMap = new Map(
+                formattedChats.map((c) => [c.username, c])
+              );
+              parsedChats.forEach((localChat) => {
+                if (!apiChatsMap.has(localChat.username)) {
+                  formattedChats.push(localChat);
+                }
+              });
+            } catch (error) {
+              console.error("Failed to parse stored chats:", error);
+            }
+          }
+
+          const sortedChats = formattedChats.sort((a, b) => {
             const timeA = new Date(a.lastMessageTime || 0).getTime();
             const timeB = new Date(b.lastMessageTime || 0).getTime();
             return timeB - timeA;
           });
           setChats(sortedChats);
         } catch (error) {
-          console.error("Failed to parse stored chats:", error);
-          setChats([]);
-        }
-      } else {
-        setChats([]);
-      }
-    }
-  }, [isOpen, currentUser?._id]);
-
-  // Слушаем события обновления переписок
-  useEffect(() => {
-    const handleChatsUpdated = () => {
-      if (currentUser?._id) {
-        const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
-        if (storedChats) {
-          try {
-            const parsedChats = JSON.parse(storedChats);
-            const sortedChats = parsedChats.sort((a, b) => {
-              const timeA = new Date(a.lastMessageTime || 0).getTime();
-              const timeB = new Date(b.lastMessageTime || 0).getTime();
-              return timeB - timeA;
-            });
-            setChats(sortedChats);
-          } catch (error) {
-            console.error("Failed to parse stored chats:", error);
+          console.error("Failed to reload chats from API:", error);
+          // Fallback на localStorage
+          const storedChats = localStorage.getItem(`chats_${currentUser._id}`);
+          if (storedChats) {
+            try {
+              const parsedChats = JSON.parse(storedChats);
+              const sortedChats = parsedChats.sort((a, b) => {
+                const timeA = new Date(a.lastMessageTime || 0).getTime();
+                const timeB = new Date(b.lastMessageTime || 0).getTime();
+                return timeB - timeA;
+              });
+              setChats(sortedChats);
+            } catch (parseError) {
+              console.error("Failed to parse stored chats:", parseError);
+            }
           }
         }
       }
@@ -118,14 +210,20 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
     }
   };
 
-  const handleOpenProfile = (event, username) => {
-    event.stopPropagation();
-    navigate(`/other-profile/${username}`);
+  const handleOverlayClick = (e) => {
+    // Если открыт чат, не закрываем модальное окно при клике на overlay
+    if (hasOpenChat) {
+      return;
+    }
+    // Предотвращаем закрытие, если клик был на самом overlay, а не на модальном окне
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
   };
 
   return (
     <>
-      <div className={styles.overlay} onClick={onClose} />
+      <div className={styles.overlay} onClick={handleOverlayClick} />
       <div className={styles.modal}>
         <h2 className={styles.title}>itcareerhub</h2>
         <div className={styles.chatsList}>
@@ -142,16 +240,13 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
                   src={chat.avatar || profileLogo}
                   alt={chat.username}
                   className={styles.avatar}
-                  onClick={(event) => handleOpenProfile(event, chat.username)}
+                  onError={(e) => {
+                    e.target.src = profileLogo;
+                  }}
                 />
                 <div className={styles.chatInfo}>
                   <div className={styles.chatHeader}>
-                    <span
-                      className={styles.username}
-                      onClick={(event) => handleOpenProfile(event, chat.username)}
-                    >
-                      {chat.username}
-                    </span>
+                    <span className={styles.username}>{chat.username}</span>
                     <span className={styles.separator}>·</span>
                     <span className={styles.time}>
                       {formatTime(chat.lastMessageTime)}
@@ -173,4 +268,3 @@ const MessagesListModal = ({ isOpen, onClose, onSelectChat, selectedChatId }) =>
 };
 
 export default MessagesListModal;
-

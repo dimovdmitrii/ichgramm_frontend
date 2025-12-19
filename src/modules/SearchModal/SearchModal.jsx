@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 import styles from "./SearchModal.module.css";
 import clearButtonIcon from "../../assets/icons/clear_Button.svg";
 import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
-import { searchUsers } from "../../shared/api/users-api";
+import {
+  searchUsers,
+  getProfileByUsername,
+  getRecentSearches,
+  addRecentSearch,
+} from "../../shared/api/users-api";
 import { selectUser } from "../../store/auth/authSelectors";
 
 const SearchModal = ({ isOpen, onClose }) => {
@@ -15,25 +20,27 @@ const SearchModal = ({ isOpen, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
 
-  // Загружаем недавние поиски из localStorage
+  // Загружаем недавние поиски из БД
   useEffect(() => {
-    if (isOpen && currentUser?._id) {
-      try {
-        const stored = localStorage.getItem(`recentSearches_${currentUser._id}`);
-        if (stored) {
-          const parsed = JSON.parse(stored);
+    const loadRecentSearches = async () => {
+      if (isOpen && currentUser?._id) {
+        try {
+          const searches = await getRecentSearches();
           // Исключаем текущего пользователя из недавних поисков
-          const filtered = parsed.filter(
+          const filtered = searches.filter(
             (user) =>
               user._id !== currentUser._id &&
               user.username !== currentUser?.username
           );
           setRecentSearches(filtered);
+        } catch (error) {
+          console.error("Failed to load recent searches:", error);
+          setRecentSearches([]);
         }
-      } catch (error) {
-        console.error("Failed to load recent searches:", error);
       }
-    }
+    };
+
+    loadRecentSearches();
   }, [isOpen, currentUser?._id]);
 
   useEffect(() => {
@@ -82,56 +89,29 @@ const SearchModal = ({ isOpen, onClose }) => {
             user.username !== currentUser?.username
         );
         setSearchResults(filteredResults);
-        
-        // Сохраняем результаты в недавние поиски (только минимальные данные)
+
+        // Сохраняем только первого найденного пользователя в недавние поиски (не блокируем UI)
         if (filteredResults.length > 0 && currentUser?._id) {
-          try {
-            const stored = localStorage.getItem(`recentSearches_${currentUser._id}`);
-            const recent = stored ? JSON.parse(stored) : [];
-            
-            // Добавляем новые результаты, исключая дубликаты
-            // Сохраняем только минимальные данные: _id, username, avatar (URL, не base64)
-            filteredResults.forEach((user) => {
-              const exists = recent.find(
-                (r) => r._id === user._id || r.username === user.username
-              );
-              if (!exists) {
-                // Сохраняем только минимальные данные
-                const minimalUser = {
-                  _id: user._id,
-                  username: user.username,
-                  avatar: user.avatar && !user.avatar.startsWith('data:') ? user.avatar : null, // Только URL, не base64
-                };
-                recent.unshift(minimalUser);
-              }
+          // Выполняем в фоне, не блокируя отображение результатов
+          addRecentSearch(filteredResults[0].username)
+            .then(() => {
+              // Обновляем список недавних поисков в фоне
+              getRecentSearches()
+                .then((searches) => {
+                  const filtered = searches.filter(
+                    (user) =>
+                      user._id !== currentUser._id &&
+                      user.username !== currentUser?.username
+                  );
+                  setRecentSearches(filtered);
+                })
+                .catch((error) => {
+                  console.error("Failed to reload recent searches:", error);
+                });
+            })
+            .catch((error) => {
+              console.error("Failed to add recent search:", error);
             });
-            
-            // Ограничиваем до 5 недавних поисков (уменьшили с 10)
-            const limited = recent.slice(0, 5);
-            const limitedString = JSON.stringify(limited);
-            
-            // Проверяем размер перед сохранением (максимум 50KB)
-            if (limitedString.length < 50 * 1024) {
-              localStorage.setItem(
-                `recentSearches_${currentUser._id}`,
-                limitedString
-              );
-              setRecentSearches(limited);
-            } else {
-              console.warn("Recent searches data too large, skipping save");
-            }
-          } catch (error) {
-            console.error("Failed to save recent searches:", error);
-            // Если ошибка QuotaExceededError, очищаем старые данные и пробуем снова
-            if (error.name === 'QuotaExceededError') {
-              try {
-                localStorage.removeItem(`recentSearches_${currentUser._id}`);
-                console.log("Cleared old recent searches due to quota exceeded");
-              } catch (clearError) {
-                console.error("Failed to clear recent searches:", clearError);
-              }
-            }
-          }
         }
       } catch (error) {
         console.error("Search error:", error);
@@ -152,13 +132,36 @@ const SearchModal = ({ isOpen, onClose }) => {
     setSearchResults([]);
   };
 
-  const handleUserClick = (username) => {
-    navigate(`/other-profile/${username}`);
+  const handleUserClick = (user) => {
+    // Сохраняем в недавние поиски при клике (не блокируем навигацию)
+    if (currentUser?._id && user) {
+      addRecentSearch(user.username)
+        .then(() => {
+          // Обновляем список недавних поисков в фоне
+          getRecentSearches()
+            .then((searches) => {
+              const filtered = searches.filter(
+                (u) =>
+                  u._id !== currentUser._id &&
+                  u.username !== currentUser?.username
+              );
+              setRecentSearches(filtered);
+            })
+            .catch((error) => {
+              console.error("Failed to reload recent searches:", error);
+            });
+        })
+        .catch((error) => {
+          console.error("Failed to save recent search:", error);
+        });
+    }
+
+    navigate(`/other-profile/${user.username || user}`);
     onClose();
   };
 
-  const handleRecentUserClick = (username) => {
-    navigate(`/other-profile/${username}`);
+  const handleRecentUserClick = (user) => {
+    navigate(`/other-profile/${user.username || user}`);
     onClose();
   };
 
@@ -199,12 +202,16 @@ const SearchModal = ({ isOpen, onClose }) => {
                   <div
                     key={user._id || user.username}
                     className={styles.searchItem}
-                    onClick={() => handleUserClick(user.username)}
+                    onClick={() => handleUserClick(user)}
                   >
                     <img
                       src={user.avatar || profileLogo}
                       alt={user.username}
                       className={styles.avatar}
+                      onError={(e) => {
+                        // Если изображение не загрузилось, используем дефолтное
+                        e.target.src = profileLogo;
+                      }}
                     />
                     <span className={styles.username}>{user.username}</span>
                   </div>
@@ -213,27 +220,33 @@ const SearchModal = ({ isOpen, onClose }) => {
                 <div className={styles.noResults}>No users found</div>
               )}
             </div>
-            {!loading && searchResults.length > 0 && recentSearches.length > 0 && (
-              <>
-                <h3 className={styles.subtitle}>Recent</h3>
-                <div className={styles.recentList}>
-                  {recentSearches.map((user) => (
-                    <div
-                      key={user._id || user.username}
-                      className={styles.recentItem}
-                      onClick={() => handleRecentUserClick(user.username)}
-                    >
-                      <img
-                        src={user.avatar || profileLogo}
-                        alt={user.username}
-                        className={styles.avatar}
-                      />
-                      <span className={styles.username}>{user.username}</span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+            {!loading &&
+              searchResults.length > 0 &&
+              recentSearches.length > 0 && (
+                <>
+                  <h3 className={styles.subtitle}>Recent</h3>
+                  <div className={styles.recentList}>
+                    {recentSearches.map((user) => (
+                      <div
+                        key={user._id || user.username}
+                        className={styles.recentItem}
+                        onClick={() => handleRecentUserClick(user)}
+                      >
+                        <img
+                          src={user.avatar || profileLogo}
+                          alt={user.username}
+                          className={styles.avatar}
+                          onError={(e) => {
+                            // Если изображение не загрузилось, используем дефолтное
+                            e.target.src = profileLogo;
+                          }}
+                        />
+                        <span className={styles.username}>{user.username}</span>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
           </>
         )}
         {!searchValue && (
@@ -245,12 +258,16 @@ const SearchModal = ({ isOpen, onClose }) => {
                   <div
                     key={user._id || user.username}
                     className={styles.recentItem}
-                    onClick={() => handleRecentUserClick(user.username)}
+                    onClick={() => handleRecentUserClick(user)}
                   >
                     <img
                       src={user.avatar || profileLogo}
                       alt={user.username}
                       className={styles.avatar}
+                      onError={(e) => {
+                        // Если изображение не загрузилось, используем дефолтное
+                        e.target.src = profileLogo;
+                      }}
                     />
                     <span className={styles.username}>{user.username}</span>
                   </div>

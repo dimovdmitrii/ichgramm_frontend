@@ -10,15 +10,31 @@ const instance = axios.create({
 // Interceptor для установки токена перед каждым запросом
 instance.interceptors.request.use(
   (config) => {
+    // Публичные эндпоинты, которые не требуют токена
+    const publicEndpoints = [
+      "/auth/login",
+      "/auth/register",
+      "/auth/refresh",
+      "/auth/logout",
+    ];
+
+    const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+      config.url?.includes(endpoint)
+    );
+
     const state = store.getState();
     const accessToken = state.auth?.accessToken;
-    
+
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
-    } else {
-      console.warn("No access token found in Redux store for request:", config.url);
+    } else if (!isPublicEndpoint) {
+      // Выводим предупреждение только для защищенных эндпоинтов
+      console.warn(
+        "No access token found in Redux store for request:",
+        config.url
+      );
     }
-    
+
     return config;
   },
   (error) => {

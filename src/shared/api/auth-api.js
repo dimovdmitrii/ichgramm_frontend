@@ -17,10 +17,19 @@ export const login = async (payload) => {
 
 export const logOut = async () => {
   try {
-    await instance.post("/auth/logout");
+    // Устанавливаем таймаут для logout запроса, чтобы он не зависал
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Logout timeout")), 5000)
+    );
+    await Promise.race([
+      instance.post("/auth/logout"),
+      timeoutPromise,
+    ]);
   } catch (error) {
-    console.error("Logout endpoint error (ignored):", error?.response?.status);
+    // Игнорируем ошибки logout - все равно очищаем токены
+    console.error("Logout endpoint error (ignored):", error?.response?.status || error?.message);
   }
+  // Всегда очищаем токен, даже если запрос не прошел
   instance.defaults.headers["Authorization"] = "";
 };
 

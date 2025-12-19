@@ -1,7 +1,9 @@
 import { useState, useEffect, FC } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import styles from "./Sidebar.module.css";
+import { selectUser } from "../../../store/auth/authSelectors";
 import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 import mainIcon from "../../../assets/icons/sidebar/main.svg";
 import mainBoldIcon from "../../../assets/icons/sidebar/main_bold.svg";
@@ -22,10 +24,11 @@ import ChatModal from "../../../modules/ChatModal/ChatModal";
 import CreatePostModal from "../../../modules/CreatePostModal/CreatePostModal";
 
 interface Chat {
-  id: number;
+  id?: string | number;
   username: string;
-  avatar: string;
+  avatar?: string | null;
   lastMessage?: string;
+  lastMessageTime?: string;
   time?: string;
 }
 
@@ -39,6 +42,7 @@ interface NavItem {
 
 const Sidebar: FC = () => {
   const location = useLocation();
+  const currentUser = useSelector(selectUser);
   const [isNotificationModalOpen, setIsNotificationModalOpen] =
     useState<boolean>(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false);
@@ -50,9 +54,12 @@ const Sidebar: FC = () => {
   useEffect(() => {
     setIsNotificationModalOpen(false);
     setIsSearchModalOpen(false);
-    setIsMessagesModalOpen(false);
+    // Не закрываем MessagesModal при смене страницы, если открыт чат
+    if (!selectedChat) {
+      setIsMessagesModalOpen(false);
+    }
     setIsCreateModalOpen(false);
-    setSelectedChat(null);
+    // Не сбрасываем selectedChat при смене страницы, чтобы чат оставался открытым
   }, [location.pathname]);
 
   const navItems: NavItem[] = [
@@ -205,7 +212,14 @@ const Sidebar: FC = () => {
         }}
         className={styles.profileItem}
       >
-        <img src={profileIcon} alt="Profile" className={styles.avatarIcon} />
+        <img
+          src={currentUser?.avatar || profileIcon}
+          alt="Profile"
+          className={styles.avatarIcon}
+          onError={(e) => {
+            e.currentTarget.src = profileIcon;
+          }}
+        />
         <span
           className={`${styles.label} ${
             location.pathname === "/profile" ? styles.labelBold : ""
@@ -228,14 +242,18 @@ const Sidebar: FC = () => {
           setIsMessagesModalOpen(false);
           setSelectedChat(null);
         }}
-        onSelectChat={(chat: Chat) => setSelectedChat(chat)}
+        onSelectChat={(chat: Chat) => {
+          setSelectedChat(chat);
+          // MessagesListModal остается открытым, ChatModal открывается рядом
+        }}
         selectedChatId={selectedChat?.id}
+        hasOpenChat={!!selectedChat}
       />
       <ChatModal
-        isOpen={isMessagesModalOpen && !!selectedChat}
+        isOpen={!!selectedChat && isMessagesModalOpen}
         onClose={() => {
           setSelectedChat(null);
-          setIsMessagesModalOpen(false);
+          // При закрытии ChatModal остаемся в MessagesListModal
         }}
         chat={selectedChat}
       />

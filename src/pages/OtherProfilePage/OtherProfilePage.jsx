@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
@@ -19,7 +20,12 @@ import profile5 from "../../assets/Images/UsersProfile/Profile_Post5.png";
 import profile6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
 import nikitaAvatar from "../../assets/Images/nikita.jpg";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
-import { getProfileByUsername, getUserPosts } from "../../shared/api/users-api";
+import {
+  getProfileByUsername,
+  getUserPosts,
+  followUser,
+  unfollowUser,
+} from "../../shared/api/users-api";
 
 const OtherProfilePage = () => {
   const { username: routeUsername } = useParams();
@@ -30,10 +36,10 @@ const OtherProfilePage = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState(null);
   const [selectedPostIndex, setSelectedPostIndex] = useState(null);
-  const [followersCount, setFollowersCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState(null);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [profile, setProfile] = useState(null);
-  const [posts, setPosts] = useState([]);
+  const [profile, setProfileState] = useState(null);
+  const [posts, setPostsState] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const staticPosts = [
@@ -48,28 +54,37 @@ const OtherProfilePage = () => {
   useEffect(() => {
     const loadProfileData = async () => {
       try {
+        setLoading(true);
+
+        // Загружаем профиль
         const profileData = await getProfileByUsername(username);
-        setProfile(profileData);
+        setProfileState(profileData);
 
         // Обновляем followers и isFollowing из данных API
         if (profileData) {
-          setFollowersCount(profileData.followersCount || 0);
+          setFollowersCount(profileData.followersCount ?? null);
           setIsFollowing(profileData.isFollowing || false);
         }
 
+        // Загружаем посты параллельно, если есть userId
         const userId = profileData?._id;
         if (userId) {
-          console.log("Loading posts for user:", userId);
-          const postsData = await getUserPosts(userId);
-          console.log("Posts received:", postsData);
-          setPosts(postsData || []);
+          try {
+            console.log("Loading posts for user:", userId);
+            const postsData = await getUserPosts(userId);
+            console.log("Posts received:", postsData);
+            setPostsState(postsData || []);
+          } catch (postsError) {
+            console.error("Failed to load posts:", postsError);
+            setPostsState([]);
+          }
         } else {
           console.error("No userId found");
-          setPosts([]);
+          setPostsState([]);
         }
       } catch (error) {
         console.error("Failed to load profile:", error);
-        setPosts([]);
+        setPostsState([]);
       } finally {
         setLoading(false);
       }
@@ -80,6 +95,7 @@ const OtherProfilePage = () => {
     } else {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   // Убрали сохранение в localStorage - данные должны приходить с API
@@ -99,6 +115,13 @@ const OtherProfilePage = () => {
   const profileFollowersCount = profile?.followersCount || 0;
   const followingCount = profile?.followingCount || 0;
 
+  // Используем локальное состояние followersCount, если оно установлено, иначе значение из профиля
+  // followersCount может быть 0, поэтому проверяем на null/undefined
+  const displayFollowersCount =
+    followersCount !== null && followersCount !== undefined
+      ? followersCount
+      : profileFollowersCount;
+
   const bioLines = bio ? bio.split("\n").filter((line) => line.trim()) : [];
   const fullBio = bioLines.join("\n");
   const shortBio = bioLines[0] || "";
@@ -107,17 +130,56 @@ const OtherProfilePage = () => {
   const displayFullBio = fullBio || "БЕСПЛАТНЫЙ ПОДБОР ПРОФЕССИИ С НУЛЯ";
   const displayShortBio = shortBio || "БЕСПЛАТНЫЙ";
 
-  const handleToggleFollow = () => {
-    // Обновляем состояние локально (оптимистичное обновление)
-    // Данные будут обновлены при следующей загрузке профиля с сервера
-    setFollowersCount((prev) => {
-      return isFollowing ? Math.max(prev - 1, 0) : prev + 1;
-    });
-    setIsFollowing((prev) => !prev);
+  const handleToggleFollow = async () => {
+    const previousFollowingState = isFollowing;
+    const previousFollowersCount = followersCount || profileFollowersCount;
 
-    // TODO: Вызвать API для подписки/отписки, когда будет готов endpoint
-    // Пока просто обновляем локальное состояние
-    // Данные должны приходить с сервера при загрузке профиля
+    // Оптимистичное обновление - обновляем моментально
+    const newFollowingState = !isFollowing;
+    setIsFollowing(newFollowingState);
+
+    // Вычисляем новое значение счетчика на основе текущего отображаемого значения
+    // Используем displayFollowersCount для моментального обновления в обоих случаях
+    const currentCount = displayFollowersCount;
+    const newCount = newFollowingState
+      ? currentCount + 1
+      : Math.max(currentCount - 1, 0);
+    setFollowersCount(newCount);
+
+    try {
+      // Вызываем API для подписки/отписки
+      if (previousFollowingState) {
+        await unfollowUser(displayUsername);
+      } else {
+        await followUser(displayUsername);
+      }
+
+      // Перезагружаем данные профиля после успешного API вызова
+      // чтобы получить актуальные данные, включая followingCount просматриваемого пользователя
+      const profileData = await getProfileByUsername(username);
+      if (profileData) {
+        setProfileState(profileData);
+        setFollowersCount(profileData.followersCount ?? null);
+        // Используем isFollowing из API, если оно есть, иначе используем новое состояние
+        setIsFollowing(
+          profileData.isFollowing !== undefined
+            ? profileData.isFollowing
+            : newFollowingState
+        );
+      } else {
+        // Если данные не загрузились, оставляем оптимистичное обновление
+        setIsFollowing(newFollowingState);
+      }
+
+      // Также обновляем данные текущего пользователя, чтобы обновить его followingCount
+      window.dispatchEvent(new Event("profileUpdated"));
+    } catch (error) {
+      // Откатываем изменения при ошибке
+      console.error("Failed to follow/unfollow:", error);
+      setFollowersCount(previousFollowersCount);
+      setIsFollowing(previousFollowingState);
+      alert(error?.response?.data?.message || "Failed to follow/unfollow user");
+    }
   };
 
   const handleOpenChat = () => {
@@ -188,7 +250,7 @@ const OtherProfilePage = () => {
                     className={styles.followButton}
                     onClick={handleToggleFollow}
                   >
-                    {isFollowing ? "Following" : "Follow"}
+                    {isFollowing ? "Unfollow" : "Follow"}
                   </button>
                   <button
                     className={styles.messageButton}
@@ -202,9 +264,7 @@ const OtherProfilePage = () => {
                     <span>{postsCount} posts</span>
                   </div>
                   <div className={styles.statItem}>
-                    <span>
-                      {followersCount || profileFollowersCount} followers
-                    </span>
+                    <span>{displayFollowersCount} followers</span>
                   </div>
                   <div className={styles.statItem}>
                     <span>{followingCount} following</span>
@@ -364,6 +424,7 @@ const OtherProfilePage = () => {
         isOpen={isChatOpen}
         onClose={handleCloseChat}
         chat={chatUser}
+        fullScreenOverlay={true}
       />
       <MyPostModal
         isOpen={isPostModalOpen}
@@ -374,6 +435,58 @@ const OtherProfilePage = () => {
             ? posts
             : staticPosts.map((img, idx) => ({ image: img, _id: idx }))
         }
+        username={displayUsername}
+        avatar={avatarSrc}
+        isFollowing={isFollowing}
+        onFollow={async (newFollowingState) => {
+          const previousFollowingState = isFollowing;
+          const previousFollowersCount = followersCount;
+
+          // Оптимистичное обновление - обновляем моментально
+          setIsFollowing(newFollowingState);
+
+          // Вычисляем новое значение счетчика на основе текущего отображаемого значения
+          // Используем displayFollowersCount для моментального обновления
+          const currentCount = displayFollowersCount;
+          const newCount = newFollowingState
+            ? currentCount + 1
+            : Math.max(currentCount - 1, 0);
+          setFollowersCount(newCount);
+
+          try {
+            if (newFollowingState) {
+              await followUser(displayUsername);
+            } else {
+              await unfollowUser(displayUsername);
+            }
+
+            // Перезагружаем данные профиля после успешного API вызова
+            const profileData = await getProfileByUsername(username);
+            if (profileData) {
+              setProfileState(profileData);
+              setFollowersCount(profileData.followersCount ?? null);
+              // Используем isFollowing из API, если оно есть, иначе используем новое состояние
+              setIsFollowing(
+                profileData.isFollowing !== undefined
+                  ? profileData.isFollowing
+                  : newFollowingState
+              );
+            } else {
+              // Если данные не загрузились, оставляем оптимистичное обновление
+              setIsFollowing(newFollowingState);
+            }
+
+            // Обновляем данные текущего пользователя
+            window.dispatchEvent(new Event("profileUpdated"));
+          } catch (error) {
+            // Откатываем изменения при ошибке
+            console.error("Failed to follow/unfollow:", error);
+            setIsFollowing(previousFollowingState);
+            setFollowersCount(previousFollowersCount);
+            throw error; // Пробрасываем ошибку для обработки в компоненте
+          }
+        }}
+        isOwnPost={false}
       />
     </>
   );

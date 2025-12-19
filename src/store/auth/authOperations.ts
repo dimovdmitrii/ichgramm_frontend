@@ -57,22 +57,19 @@ export const logoutUser = createAsyncThunk(
 export const refreshUserToken = createAsyncThunk<
   { accessToken: string; refreshToken?: string },
   string
->(
-  "refreshToken",
-  async (refreshToken, { rejectWithValue }) => {
-    try {
-      const data = await authApi.refreshToken(refreshToken);
-      return data;
-    } catch (error: unknown) {
-      const axiosError = error as ApiError;
-      return rejectWithValue(
-        axiosError?.response?.data?.message ||
-          axiosError?.message ||
-          "Token refresh failed"
-      );
-    }
+>("refreshToken", async (refreshToken, { rejectWithValue }) => {
+  try {
+    const data = await authApi.refreshToken(refreshToken);
+    return data;
+  } catch (error: unknown) {
+    const axiosError = error as ApiError;
+    return rejectWithValue(
+      axiosError?.response?.data?.message ||
+        axiosError?.message ||
+        "Token refresh failed"
+    );
   }
-);
+});
 
 export const getCurrentUser = createAsyncThunk(
   "current",
