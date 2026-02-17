@@ -13,7 +13,7 @@ function App() {
   // Восстанавливаем данные пользователя при загрузке приложения, если есть токены, но нет данных пользователя
   useEffect(() => {
     if (hasTokens && !user) {
-      dispatch(getCurrentUser() as any).catch((error) => {
+      dispatch(getCurrentUser() as any).catch((error: unknown) => {
         console.error("Failed to restore user session:", error);
       });
     }
