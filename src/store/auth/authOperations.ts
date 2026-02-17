@@ -5,6 +5,7 @@ import type { AxiosError } from "axios";
 
 type ApiError = AxiosError<{
   message: string;
+  field?: string;
 }>;
 
 export const registerUser = createAsyncThunk(
@@ -15,9 +16,10 @@ export const registerUser = createAsyncThunk(
       return data;
     } catch (error: unknown) {
       const axiosError = error as ApiError;
-      return rejectWithValue({
-        email: axiosError?.response?.data?.message || axiosError?.message,
-      });
+      const data = axiosError?.response?.data;
+      const message = data?.message || axiosError?.message;
+      const field = data?.field || "email";
+      return rejectWithValue({ [field]: message });
     }
   }
 );
@@ -30,9 +32,10 @@ export const loginUser = createAsyncThunk(
       return data;
     } catch (error: unknown) {
       const axiosError = error as ApiError;
-      return rejectWithValue({
-        email: axiosError?.response?.data?.message || axiosError?.message,
-      });
+      const data = axiosError?.response?.data;
+      const message = data?.message || axiosError?.message;
+      const field = data?.field || "username";
+      return rejectWithValue({ [field]: message });
     }
   }
 );
