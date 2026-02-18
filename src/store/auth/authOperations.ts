@@ -18,6 +18,7 @@ export const registerUser = createAsyncThunk(
     } catch (error: unknown) {
       const axiosError = error as ApiError;
       const data = axiosError?.response?.data;
+      console.error("Register failed:", axiosError?.response?.status, data);
       const message = data?.message || axiosError?.message;
       if (data?.errors && typeof data.errors === "object") {
         return rejectWithValue(data.errors);
