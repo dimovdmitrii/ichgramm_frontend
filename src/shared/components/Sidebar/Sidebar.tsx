@@ -62,6 +62,24 @@ const Sidebar: FC = () => {
     // Не сбрасываем selectedChat при смене страницы, чтобы чат оставался открытым
   }, [location.pathname]);
 
+  // Слушаем события от футера — открыть ту же модалку/страницу, что и по клику в сайдбаре
+  useEffect(() => {
+    const openSearch = () => setIsSearchModalOpen(true);
+    const openMessages = () => setIsMessagesModalOpen(true);
+    const openNotifications = () => setIsNotificationModalOpen(true);
+    const openCreate = () => setIsCreateModalOpen(true);
+    window.addEventListener("sidebar:openSearch", openSearch);
+    window.addEventListener("sidebar:openMessages", openMessages);
+    window.addEventListener("sidebar:openNotifications", openNotifications);
+    window.addEventListener("sidebar:openCreate", openCreate);
+    return () => {
+      window.removeEventListener("sidebar:openSearch", openSearch);
+      window.removeEventListener("sidebar:openMessages", openMessages);
+      window.removeEventListener("sidebar:openNotifications", openNotifications);
+      window.removeEventListener("sidebar:openCreate", openCreate);
+    };
+  }, []);
+
   const navItems: NavItem[] = [
     {
       path: "/home",

@@ -19,13 +19,30 @@
   margin-top: 0;
 }
 
-.link {
+.link,
+.linkButton {
   font-size: 12px;
   font-weight: 400;
   color: #737373;
-  text-decoration: none;
   line-height: 16px;
   white-space: nowrap;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family-base);
+  text-decoration: none;
+}
+
+.linkButton:hover {
+  color: var(--color-text-dark);
 }
 
 .copyright {
@@ -52,7 +69,8 @@
     justify-content: center;
   }
 
-  .link {
+  .link,
+  .linkButton {
     font-size: 11px;
     white-space: nowrap;
   }
