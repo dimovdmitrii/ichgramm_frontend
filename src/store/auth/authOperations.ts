@@ -6,6 +6,7 @@ import type { AxiosError } from "axios";
 type ApiError = AxiosError<{
   message: string;
   field?: string;
+  errors?: Record<string, string>;
 }>;
 
 export const registerUser = createAsyncThunk(
@@ -18,6 +19,9 @@ export const registerUser = createAsyncThunk(
       const axiosError = error as ApiError;
       const data = axiosError?.response?.data;
       const message = data?.message || axiosError?.message;
+      if (data?.errors && typeof data.errors === "object") {
+        return rejectWithValue(data.errors);
+      }
       const field = data?.field || "email";
       return rejectWithValue({ [field]: message });
     }
@@ -34,6 +38,9 @@ export const loginUser = createAsyncThunk(
       const axiosError = error as ApiError;
       const data = axiosError?.response?.data;
       const message = data?.message || axiosError?.message;
+      if (data?.errors && typeof data.errors === "object") {
+        return rejectWithValue(data.errors);
+      }
       const field = data?.field || "username";
       return rejectWithValue({ [field]: message });
     }
