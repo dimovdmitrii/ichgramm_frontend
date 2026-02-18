@@ -111,7 +111,7 @@
   cursor: pointer;
 }
 
-@media (max-width: 425px) {
+@media (max-width: 777px) {
   .form {
     position: relative;
     top: 0;

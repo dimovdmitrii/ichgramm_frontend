@@ -142,8 +142,8 @@
   text-decoration: underline;
 }
 
-/* Адаптивность 425px и ниже */
-@media (max-width: 425px) {
+/* Адаптивность 777px и ниже: логотип Instagram вместо фона, размещение как на мобильных */
+@media (max-width: 777px) {
   .loginPage {
     padding: 16px;
     min-height: 100vh;
