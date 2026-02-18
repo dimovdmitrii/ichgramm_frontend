@@ -54,6 +54,10 @@
   z-index: 0;
 }
 
+.backgroundImageMobile {
+  display: none;
+}
+
 .formContainer {
   position: absolute;
   bottom: 32px;
@@ -136,4 +140,88 @@
 
 .signupLink:hover {
   text-decoration: underline;
+}
+
+/* Адаптивность 425px и ниже */
+@media (max-width: 425px) {
+  .loginPage {
+    padding: 16px;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  .section {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 24px;
+  }
+
+  .main {
+    bottom: 0;
+  }
+
+  .article {
+    width: 100%;
+    top: 16px;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transform: none;
+    left: 0;
+  }
+
+  .backgroundImage {
+    display: none;
+  }
+
+  .backgroundImageMobile {
+    display: block;
+    position: relative;
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 24px;
+    flex-shrink: 0;
+  }
+
+  .formContainer {
+    position: relative;
+    left: 0;
+    transform: none;
+    bottom: 0;
+    top: 0;
+    width: 100%;
+    max-width: 350px;
+    padding: 0 16px;
+  }
+
+  .loginCard {
+    position: relative;
+    top: 0;
+    transform: none;
+    min-height: 340px;
+    height: auto;
+    padding: 24px 16px 16px;
+  }
+
+  .logoContainer {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 160px;
+    height: 56px;
+    margin-bottom: 8px;
+  }
+
+  .signupCard {
+    position: relative;
+    top: 0;
+    transform: none;
+    margin-top: 8px;
+    min-height: 56px;
+    height: auto;
+    padding: 16px;
+  }
 }
