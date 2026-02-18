@@ -1,8 +1,17 @@
 .post {
   position: relative;
   width: 403px;
+  max-width: 100%;
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 14px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .post {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .postHeader {

@@ -107,10 +107,11 @@ const Sidebar: FC = () => {
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.logoContainer}>
-        <img src={logoIcon} alt="ICHGRAM" className={styles.logo} />
-      </div>
-      <nav className={styles.nav}>
+      <div className={styles.sidebarBar}>
+        <div className={styles.logoContainer}>
+          <img src={logoIcon} alt="ICHGRAM" className={styles.logo} />
+        </div>
+        <nav className={styles.nav}>
         {navItems.map((item) => {
           const isActive = item.isModal
             ? item.path === "/notifications"
@@ -228,6 +229,7 @@ const Sidebar: FC = () => {
           Profile
         </span>
       </Link>
+      </div>
       <NotificationModal
         isOpen={isNotificationModalOpen}
         onClose={() => setIsNotificationModalOpen(false)}

@@ -37,3 +37,28 @@
   margin-top: 50px;
   text-align: center;
 }
+
+@media (max-width: 767px) {
+  .footer {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    padding: 24px 16px calc(24px + var(--bottom-nav-height)) 16px;
+  }
+
+  .linksContainer {
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    justify-content: center;
+  }
+
+  .link {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .copyright {
+    margin-top: 20px;
+    font-size: 11px;
+  }
+}

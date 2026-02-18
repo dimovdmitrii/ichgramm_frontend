@@ -9,6 +9,8 @@ import styles from "./MyProfilePage.module.css";
 import profileLogo from "../../assets/icons/MyProfile_Logo.svg";
 import ringRainbow from "../../assets/Images/ring-rainbow.png";
 import linkIcon from "../../assets/icons/Link_Icon.svg";
+import notificationsIcon from "../../assets/icons/sidebar/notifications.svg";
+import createIcon from "../../assets/icons/sidebar/create.svg";
 import profile1 from "../../assets/Images/UsersProfile/Profile_Post1.png";
 import profile2 from "../../assets/Images/UsersProfile/Profile_Post2.png";
 import profile3 from "../../assets/Images/UsersProfile/Profile_Post3.png";
@@ -34,6 +36,7 @@ const MyProfilePage = () => {
   const [profile, setProfileState] = useState(null);
   const [posts, setPostsState] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("grid");
 
   const loadProfileData = async () => {
     try {
@@ -122,7 +125,7 @@ const MyProfilePage = () => {
       // Вызываем API для удаления поста
       await deletePost(postId);
       // Обновляем список постов
-      setPosts((prev) =>
+      setPostsState((prev) =>
         prev.filter((post) => (post._id || post.id) !== postId)
       );
       if (isModalOpen && selectedPostIndex !== null) {
@@ -155,8 +158,8 @@ const MyProfilePage = () => {
         getProfile(),
         getUserPosts(currentUser?._id),
       ]);
-      setProfile(profileData);
-      setPosts(postsData || []);
+      setProfileState(profileData);
+      setPostsState(postsData || []);
     } catch (error) {
       console.error("Failed to reload data:", error);
     }
@@ -180,11 +183,13 @@ const MyProfilePage = () => {
   const displayProfile = profile || currentUser;
   const avatarUrl = displayProfile?.avatar || profileLogo;
   const username = displayProfile?.username || "username";
+  const fullName = displayProfile?.fullName || displayProfile?.name || "";
   const bio = displayProfile?.bio || "";
   const website = displayProfile?.website || "";
-  const postsCount = displayProfile?.postsCount || posts.length;
-  const followersCount = displayProfile?.followersCount || 0;
-  const followingCount = displayProfile?.followingCount || 0;
+  const postsCount = displayProfile?.postsCount ?? posts.length;
+  const followersCount = displayProfile?.followersCount ?? 0;
+  const followingCount = displayProfile?.followingCount ?? 0;
+  const notificationsCount = 0; // можно подтянуть из API
 
   const bioLines = bio.split("\n").filter((line) => line.trim());
   const fullBio = bioLines.join("\n");
@@ -209,134 +214,123 @@ const MyProfilePage = () => {
     <>
       <Sidebar />
       <div className={styles.pageWrapper}>
+        {/* Верхняя полоса (как в Instagram): настройки, username, уведомления */}
+        <header className={styles.topBar}>
+          <button
+            type="button"
+            className={styles.topBarIcon}
+            onClick={handleEditProfile}
+            aria-label="Settings"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009.19 18a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 006 6.81a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <div className={styles.topBarUsername}>
+            <span>{username}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div className={styles.topBarRight}>
+            <span className={styles.topBarIconWrap}>
+              <img src={notificationsIcon} alt="" className={styles.topBarIconImg} />
+              {notificationsCount > 0 && (
+                <span className={styles.topBarBadge}>{notificationsCount > 9 ? "9+" : notificationsCount}</span>
+              )}
+            </span>
+          </div>
+        </header>
+
         <div className={styles.content}>
           <div className={styles.container}>
+            {/* Блок профиля: аватар слева, справа username, статистика, имя, био, кнопки */}
             <div className={styles.header}>
               <div className={styles.avatarContainer}>
                 <div className={styles.avatarWrapper}>
-                  <img
-                    src={ringRainbow}
-                    alt="Rainbow ring"
-                    className={styles.ringRainbow}
-                  />
-                  <img
-                    src={avatarUrl}
-                    alt="Profile"
-                    className={styles.avatar}
-                  />
+                  <img src={ringRainbow} alt="" className={styles.ringRainbow} />
+                  <img src={avatarUrl} alt="Profile" className={styles.avatar} />
                 </div>
               </div>
               <div className={styles.profileInfo}>
-                <div className={styles.usernameSection}>
-                  <h2 className={styles.username}>{username}</h2>
-                  <button
-                    className={styles.editButton}
-                    onClick={handleEditProfile}
-                  >
-                    Edit profile
-                  </button>
-                </div>
+                <h2 className={styles.username}>{username}</h2>
                 <div className={styles.stats}>
-                  <div className={styles.statItem}>
-                    <span>{postsCount} posts</span>
-                  </div>
-                  <div className={styles.statItem}>
-                    <span>{followersCount} followers</span>
-                  </div>
-                  <div className={styles.statItem}>
-                    <span>{followingCount} following</span>
-                  </div>
+                  <div className={styles.statItem}><strong>{postsCount}</strong> posts</div>
+                  <div className={styles.statItem}><strong>{followersCount}</strong> followers</div>
+                  <div className={styles.statItem}><strong>{followingCount}</strong> following</div>
                 </div>
+                {fullName && <p className={styles.fullName}>{fullName}</p>}
                 <div className={styles.bioSection}>
                   <div className={styles.bio}>
                     {bioLines.length > 3 ? (
-                      <>
-                        {isExpanded ? (
-                          <>
-                            {bioLines.map((line, index) => (
-                              <p key={index}>{line}</p>
-                            ))}
-                            <p>
-                              <span className={styles.moreLink}>
-                                {" "}
-                                <button
-                                  className={styles.moreButton}
-                                  onClick={() => setIsExpanded(false)}
-                                >
-                                  less
-                                </button>
-                              </span>
-                            </p>
-                          </>
-                        ) : (
-                          <>
-                            {bioLines.slice(0, 3).map((line, index) => (
-                              <p key={index}>{line}</p>
-                            ))}
-                            <p>
-                              <span className={styles.moreLink}>
-                                {" ... "}
-                                <button
-                                  className={styles.moreButton}
-                                  onClick={() => setIsExpanded(true)}
-                                >
-                                  more
-                                </button>
-                              </span>
-                            </p>
-                          </>
-                        )}
-                      </>
+                      isExpanded ? (
+                        <>
+                          {bioLines.map((line, index) => <p key={index}>{line}</p>)}
+                          <button type="button" className={styles.moreButton} onClick={() => setIsExpanded(false)}>less</button>
+                        </>
+                      ) : (
+                        <>
+                          {bioLines.slice(0, 3).map((line, index) => <p key={index}>{line}</p>)}
+                          {" ... "}
+                          <button type="button" className={styles.moreButton} onClick={() => setIsExpanded(true)}>more</button>
+                        </>
+                      )
                     ) : (
                       bioLines.map((line, index) => <p key={index}>{line}</p>)
                     )}
                   </div>
                   {website && (
                     <div className={styles.linkContainer}>
-                      <img
-                        src={linkIcon}
-                        alt="Link icon"
-                        className={styles.linkIcon}
-                      />
-                      <a
-                        href={
-                          website.startsWith("http")
-                            ? website
-                            : `https://${website}`
-                        }
-                        className={styles.externalLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {website}
-                      </a>
+                      <img src={linkIcon} alt="" className={styles.linkIcon} />
+                      <a href={website.startsWith("http") ? website : `https://${website}`} className={styles.externalLink} target="_blank" rel="noopener noreferrer">{website}</a>
                     </div>
                   )}
                 </div>
+                <div className={styles.profileActions}>
+                  <button type="button" className={styles.editButton} onClick={handleEditProfile}>Edit profile</button>
+                  <button type="button" className={styles.archiveButton}>Archived</button>
+                </div>
               </div>
             </div>
+
+            {/* Круг "Новое" (сторис/хайлайт) */}
+            <div className={styles.storySection}>
+              <button type="button" className={styles.storyNew}>
+                <span className={styles.storyNewIcon}>
+                  <img src={createIcon} alt="" />
+                </span>
+                <span className={styles.storyNewLabel}>New</span>
+              </button>
+            </div>
+
+            {/* Вкладки: Сетка, Reels, Saved, Tagged */}
+            <div className={styles.tabs}>
+              <button type="button" className={`${styles.tab} ${activeTab === "grid" ? styles.tabActive : ""}`} onClick={() => setActiveTab("grid")} aria-label="Posts">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              </button>
+              <button type="button" className={`${styles.tab} ${activeTab === "reels" ? styles.tabActive : ""}`} onClick={() => setActiveTab("reels")} aria-label="Reels">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M10 8l6 4-6 4V8z"/></svg>
+              </button>
+              <button type="button" className={`${styles.tab} ${activeTab === "saved" ? styles.tabActive : ""}`} onClick={() => setActiveTab("saved")} aria-label="Saved">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+              </button>
+              <button type="button" className={`${styles.tab} ${activeTab === "tagged" ? styles.tabActive : ""}`} onClick={() => setActiveTab("tagged")} aria-label="Tagged">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </button>
+            </div>
+
+            {/* Сетка постов (пока только для вкладки grid) */}
             <div className={styles.postsGrid}>
-              {displayPosts.map((post, index) => {
+              {activeTab === "grid" && displayPosts.map((post, index) => {
                 const postImage = post.image || profileLogo;
                 const postKey = post._id || index;
-
                 return (
-                  <div
-                    key={postKey}
-                    className={styles.postItem}
-                    onClick={() => handlePostClick(index)}
-                  >
-                    <img
-                      src={postImage}
-                      alt={`Post ${index + 1}`}
-                      className={styles.postImage}
-                    />
+                  <div key={postKey} className={styles.postItem} onClick={() => handlePostClick(index)}>
+                    <img src={postImage} alt={`Post ${index + 1}`} className={styles.postImage} />
                   </div>
                 );
               })}
-              {displayPosts.length === 0 && (
-                <div className={styles.noPosts}>No posts yet</div>
-              )}
+              {activeTab === "grid" && displayPosts.length === 0 && <div className={styles.noPosts}>No posts yet</div>}
+              {activeTab !== "grid" && <div className={styles.noPosts}>No content yet</div>}
             </div>
           </div>
         </div>

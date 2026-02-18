@@ -7,6 +7,13 @@
   background: #ffffff;
 }
 
+@media (max-width: 767px) {
+  .pageWrapper {
+    margin-left: 0;
+    padding-bottom: var(--bottom-nav-height);
+  }
+}
+
 .content {
   flex: 1;
   position: relative;
