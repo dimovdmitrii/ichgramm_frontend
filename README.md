@@ -6,7 +6,7 @@ Password: Qwer123!
 
 ## Architecture & Tech Stack
 
-**Tech stack:** React 19, Vite 7, TypeScript. State management: Redux Toolkit with Redux Persist. Routing: React Router v7. HTTP: Axios. Forms: React Hook Form. Styling: CSS Modules. Linting: ESLint.
+**Tech stack:** React, TypeScript. State management: Redux Toolkit with Redux Persist. Routing: React Router v7. HTTP: Axios. Forms: React Hook Form. Styling: CSS Modules. Linting: ESLint.
 
 **Architecture:** App entry and auth restoration in `App.tsx`; routing and layout in `pages/Navigation`. **Pages** — Home, Explore, My Profile, Other Profile, Edit Profile, Login/Register/Reset, NotFound, Privacy/Terms. **Modules** — feature modals (Search, Chat, Create/Edit/My Post, Notifications, Messages) and auth forms. **Shared** — `api` (Axios instance, auth and users APIs), reusable UI (Sidebar, Post, Button, Input, TextField, Footer), route guards (PrivateRoute, PublicRoute). **Store** — auth slice (user, tokens), persisted via redux-persist.
 
