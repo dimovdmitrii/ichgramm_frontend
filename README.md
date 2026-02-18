@@ -1,3 +1,6 @@
+Login: dima1
+Password: Qwer123!
+
 # React + Vite
 
 ## Architecture & Tech Stack
@@ -8,9 +11,7 @@
 
 ---
 
-Login: dima1
 
-Password: Qwer123!
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
