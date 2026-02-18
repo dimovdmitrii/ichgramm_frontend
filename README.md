@@ -1,3 +1,7 @@
+Login: dima1
+
+Password: Qwer123!
+
 # React + Vite
 
 ## Architecture & Tech Stack
@@ -7,10 +11,6 @@
 **Architecture:** App entry and auth restoration in `App.tsx`; routing and layout in `pages/Navigation`. **Pages** — Home, Explore, My Profile, Other Profile, Edit Profile, Login/Register/Reset, NotFound, Privacy/Terms. **Modules** — feature modals (Search, Chat, Create/Edit/My Post, Notifications, Messages) and auth forms. **Shared** — `api` (Axios instance, auth and users APIs), reusable UI (Sidebar, Post, Button, Input, TextField, Footer), route guards (PrivateRoute, PublicRoute). **Store** — auth slice (user, tokens), persisted via redux-persist.
 
 ---
-
-Login: dima1
-
-Password: Qwer123!
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

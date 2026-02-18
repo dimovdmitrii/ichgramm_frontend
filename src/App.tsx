@@ -19,6 +19,16 @@ function App() {
     }
   }, [dispatch, hasTokens, user]);
 
+  // Keep-alive: пинг бэкенда каждые 14 минут, чтобы Render (free tier) не засыпал
+  useEffect(() => {
+    const baseUrl = import.meta.env.VITE_API_URL;
+    if (!baseUrl) return;
+    const ping = () => fetch(`${baseUrl}/api/health`).catch(() => {});
+    ping();
+    const interval = setInterval(ping, 14 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
       <Navigation />
