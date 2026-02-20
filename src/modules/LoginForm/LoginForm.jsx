@@ -71,8 +71,9 @@ const LoginForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
       </div>
       <div className={styles.dividerContainer}>
         <div className={styles.divider}></div>
-        <div className={styles.divider}></div>
         <span className={styles.dividerText}>or</span>
+        <div className={styles.divider}></div>
+        
       </div>
       <Link to="/reset" className={styles.forgotPasswordLink}>
         <span className={styles.forgotPasswordText}>Forgot password?</span>

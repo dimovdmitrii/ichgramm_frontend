@@ -37,50 +37,38 @@
 .buttonWrapper {
   position: absolute;
   left: 40px;
+  right: 40px;
   top: 120px;
-  width: 268px;
+  width: auto;
   height: 32px;
 }
 
+/* Под кнопкой Log in — разделитель OR, по ширине как поля (как у формы регистрации) */
 .dividerContainer {
   position: relative;
-  width: 100%;
-  height: 1px;
   top: 180px;
+  margin: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .divider {
-  position: absolute;
-  height: 1px;
-  background-color: #dbdbdb;
-  top: 0;
-}
-
-.divider:first-of-type {
-  left: 40px;
-  right: 202px;
-}
-
-.divider:last-of-type {
-  left: 202px;
-  right: 40px;
+  flex: 1;
+  height: 0;
+  border: none;
+  border-bottom: 1px solid #dbdbdb;
+  margin: 0;
 }
 
 .dividerText {
-  position: absolute;
-  left: 164px;
-  top: 2px;
-  transform: translateY(-50%);
   font-family: var(--font-family-base);
   font-size: 13px;
   font-weight: 600;
   color: var(--color-text-light);
   text-transform: uppercase;
-  width: 20px;
-  height: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 4px;
 }
 
 .forgotPasswordLink {
@@ -113,8 +101,8 @@
 
 @media (max-width: 777px) {
   .form {
-    position: relative;
-    top: 0;
+    /* position: relative;
+    top: 0; */
     height: auto;
     padding: 0 16px 16px;
   }
@@ -151,14 +139,8 @@
 
   .forgotPasswordLink {
     position: relative;
+    align-items: center;
     top: 0;
     margin-top: 8px;
-  }
-
-  .forgotPasswordText {
-    position: relative;
-    left: 0;
-    top: 0;
-    transform: none;
   }
 }

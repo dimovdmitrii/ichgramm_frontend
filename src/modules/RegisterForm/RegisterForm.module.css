@@ -96,12 +96,83 @@
   width: 268px;
   height: 32px;
 }
+
 .errorText {
   color: #ed4956;
   font-family: var(--font-family-base);
   font-size: 12px;
   font-weight: 400;
-
   padding: 0;
   line-height: 16px;
+}
+
+/* Мобильные экраны ≤425px — форма по аналогии с логином: потоковая вёрстка без absolute */
+@media (max-width: 425px) {
+  .form {
+    position: relative;
+    height: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 0 0 16px;
+    width: 100%;
+  }
+
+  .taglineContainer {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: auto;
+    margin-bottom: 16px;
+  }
+
+  .taglineText {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .inputWrapper {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: auto;
+    min-height: 38px;
+    margin-bottom: 12px;
+  }
+
+  .emailInput,
+  .fullNameInput,
+  .usernameInput,
+  .passwordInput {
+    top: 0;
+  }
+
+  .legalContainer {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: auto;
+    margin: 12px 0 16px;
+    min-height: 0;
+  }
+
+  .legalTextRow {
+    margin-bottom: 6px;
+  }
+
+  .legalText {
+    font-size: 11px;
+    line-height: 14px;
+  }
+
+  .buttonWrapper {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin-top: 0;
+  }
 }

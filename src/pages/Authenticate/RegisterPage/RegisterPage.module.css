@@ -126,7 +126,7 @@
   text-decoration: underline;
 }
 
-/* Адаптивность 425px и ниже */
+/* Адаптивность 425px и ниже — по аналогии с формой логина на мобильных */
 @media (max-width: 425px) {
   .registerPage {
     padding: 16px;
@@ -139,10 +139,12 @@
     max-width: 100%;
     height: auto;
     min-height: 100%;
+    padding-bottom: 24px;
   }
 
   .main {
     position: relative;
+    bottom: 0;
   }
 
   .article {
@@ -150,7 +152,9 @@
     position: relative;
     left: 0;
     transform: none;
-    top: 0;
+    top: 16px;
+    flex-direction: column;
+    align-items: center;
   }
 
   .formContainer {
@@ -161,16 +165,19 @@
     bottom: 0;
     width: 100%;
     max-width: 350px;
-    padding: 16px;
+    padding: 0 16px;
   }
 
   .registerCard {
     position: relative;
     top: 0;
     transform: none;
-    min-height: 400px;
+    min-height: auto;
     height: auto;
     padding: 24px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .logoContainer {

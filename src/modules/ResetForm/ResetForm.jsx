@@ -50,12 +50,12 @@ const ResetForm = () => {
         <Button type="submit">Reset your password</Button>
       </div>
 
-      {/* Divider */}
+      {/* Divider
       <div className={styles.dividerContainer}>
         <div className={styles.divider}></div>
         <div className={styles.divider}></div>
-        <span className={styles.dividerText}>or</span>
-      </div>
+       
+      </div> */}
 
       {/* Create new account link */}
       <Link to="/register" className={styles.createAccountLink}>

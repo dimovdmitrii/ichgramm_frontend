@@ -244,7 +244,14 @@ const MyPostModal = ({
     <>
       <div className={styles.overlay} onClick={onClose} />
       <div className={styles.modal}>
-        <div className={styles.imageSection}>
+        <div
+          className={styles.imageSection}
+          onClick={onClose}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && onClose()}
+          aria-label="Close post"
+        >
           <img
             src={currentImage}
             alt={`Post ${postIndex + 1}`}
