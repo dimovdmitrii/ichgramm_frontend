@@ -17,6 +17,7 @@ import notificationsIcon from "../../../assets/icons/sidebar/notifications.svg";
 import notificationBoldIcon from "../../../assets/icons/sidebar/Heart_Bold.svg";
 import createIcon from "../../../assets/icons/sidebar/create.svg";
 import profileIcon from "../../../assets/icons/MyProfile_Logo.svg";
+import ringRainbow from "../../../assets/Images/ring-rainbow.png";
 import NotificationModal from "../../../modules/NotificationModal/NotificationModal";
 import SearchModal from "../../../modules/SearchModal/SearchModal";
 import MessagesListModal from "../../../modules/MessagesListModal/MessagesListModal";
@@ -231,14 +232,17 @@ const Sidebar: FC = () => {
         }}
         className={styles.profileItem}
       >
-        <img
-          src={currentUser?.avatar || profileIcon}
-          alt="Profile"
-          className={styles.avatarIcon}
-          onError={(e) => {
-            e.currentTarget.src = profileIcon;
-          }}
-        />
+        <div className={styles.profileAvatarWrap}>
+          <img src={ringRainbow} alt="" className={styles.profileAvatarRing} aria-hidden />
+          <img
+            src={currentUser?.avatar || profileIcon}
+            alt="Profile"
+            className={styles.avatarIcon}
+            onError={(e) => {
+              e.currentTarget.src = profileIcon;
+            }}
+          />
+        </div>
         <span
           className={`${styles.label} ${
             location.pathname === "/profile" ? styles.labelBold : ""

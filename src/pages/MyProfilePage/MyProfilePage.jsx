@@ -11,6 +11,7 @@ import ringRainbow from "../../assets/Images/ring-rainbow.png";
 import linkIcon from "../../assets/icons/Link_Icon.svg";
 import notificationsIcon from "../../assets/icons/sidebar/notifications.svg";
 import createIcon from "../../assets/icons/sidebar/create.svg";
+import gearIcon from "../../assets/icons/sidebar/gear_9002434.png";
 import profile1 from "../../assets/Images/UsersProfile/Profile_Post1.png";
 import profile2 from "../../assets/Images/UsersProfile/Profile_Post2.png";
 import profile3 from "../../assets/Images/UsersProfile/Profile_Post3.png";
@@ -233,10 +234,7 @@ const MyProfilePage = () => {
             onClick={handleEditProfile}
             aria-label="Settings"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009.19 18a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 006 6.81a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            <img src={gearIcon} alt="" className={styles.topBarGearIcon} />
           </button>
           <div className={styles.topBarUsername}>
             <span>{username}</span>

@@ -66,6 +66,13 @@
     justify-content: center;
   }
 
+  .topBarGearIcon {
+    width: 24px;
+    height: 24px;
+    display: block;
+    object-fit: contain;
+  }
+
   .topBarUsername {
     display: flex;
     align-items: center;
