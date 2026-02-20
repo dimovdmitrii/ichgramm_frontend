@@ -18,7 +18,8 @@ function App() {
   // На задеплоенном сайте (production): при отсутствии сессии сразу логиним тестового пользователя
   useEffect(() => {
     if (import.meta.env.PROD && !hasTokens && !user) {
-      dispatch(loginUser(AUTO_LOGIN) as any).catch((error: unknown) => {
+      const result = dispatch(loginUser(AUTO_LOGIN) as unknown as Parameters<typeof dispatch>[0]);
+      (result as unknown as Promise<unknown>).catch((error: unknown) => {
         console.error("Auto-login failed:", error);
       });
     }
