@@ -1,13 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./NotificationModal.module.css";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
 import profilePost1 from "../../assets/Images/UsersProfile/Profile_Post1.png";
 import profilePost4 from "../../assets/Images/UsersProfile/Profile_Post4.png";
 import profilePost6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
+import MyPostModal from "../MyPostModal/MyPostModal";
 
 const postThumbnails = [profilePost1, profilePost4, profilePost6];
+const NOTIFICATION_USERNAME = "sashaa";
+const postsForUser = [
+  { image: profilePost1 },
+  { image: profilePost4 },
+  { image: profilePost6 },
+];
 
 const NotificationModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+  const [postModalOpen, setPostModalOpen] = useState(false);
+  const [selectedPostIndex, setSelectedPostIndex] = useState(null);
+
   useEffect(() => {
     if (isOpen) {
       // Сохраняем текущую позицию прокрутки
@@ -66,6 +78,17 @@ const NotificationModal = ({ isOpen, onClose }) => {
     },
   ];
 
+  const handleAvatarClick = () => {
+    onClose();
+    navigate(`/other-profile/${NOTIFICATION_USERNAME}`);
+  };
+
+  const handleThumbnailClick = (index) => (e) => {
+    e.stopPropagation();
+    setSelectedPostIndex(index);
+    setPostModalOpen(true);
+  };
+
   return (
     <>
       <div className={styles.overlay} onClick={onClose} />
@@ -75,11 +98,18 @@ const NotificationModal = ({ isOpen, onClose }) => {
         <div className={styles.notificationsList}>
           {notifications.map((notification) => (
             <div key={notification.id} className={styles.notificationItem}>
-              <img
-                src={sashaaAvatar}
-                alt={notification.username}
-                className={styles.avatar}
-              />
+              <button
+                type="button"
+                onClick={handleAvatarClick}
+                className={styles.avatarButton}
+                aria-label={`Go to ${notification.username} profile`}
+              >
+                <img
+                  src={sashaaAvatar}
+                  alt={notification.username}
+                  className={styles.avatar}
+                />
+              </button>
               <div className={styles.notificationText}>
                 <span className={styles.username}>{notification.username}</span>
                 <span className={styles.action}> {notification.action} </span>
@@ -87,15 +117,31 @@ const NotificationModal = ({ isOpen, onClose }) => {
                 <span className={styles.object}>{notification.object}</span>
                 <span className={styles.time}> {notification.time}</span>
               </div>
-              <img
-                src={postThumbnails[notification.id - 1]}
-                alt="Post thumbnail"
-                className={styles.thumbnail}
-              />
+              <button
+                type="button"
+                onClick={handleThumbnailClick(notification.id - 1)}
+                className={styles.thumbnailButton}
+                aria-label="Open post"
+              >
+                <img
+                  src={postThumbnails[notification.id - 1]}
+                  alt="Post thumbnail"
+                  className={styles.thumbnail}
+                />
+              </button>
             </div>
           ))}
         </div>
       </div>
+      <MyPostModal
+        isOpen={postModalOpen}
+        onClose={() => setPostModalOpen(false)}
+        postIndex={selectedPostIndex}
+        posts={postsForUser}
+        username={NOTIFICATION_USERNAME}
+        avatar={sashaaAvatar}
+        isOwnPost={false}
+      />
     </>
   );
 };

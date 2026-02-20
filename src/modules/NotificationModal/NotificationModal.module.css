@@ -75,12 +75,30 @@
   gap: 14px;
 }
 
+.avatarButton {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 20px;
   object-fit: cover;
+  display: block;
+}
+
+.thumbnailButton {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
   flex-shrink: 0;
+  line-height: 0;
 }
 
 .notificationText {

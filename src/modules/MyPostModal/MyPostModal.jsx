@@ -37,6 +37,7 @@ const MyPostModal = ({
 }) => {
   const [comment, setComment] = useState("");
   const [isLiked, setIsLiked] = useState(false);
+  const [commentLikes, setCommentLikes] = useState({ 1: true, 2: false });
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const currentUser = useSelector(selectUser);
 
@@ -395,23 +396,28 @@ const MyPostModal = ({
                   </span>
                 </div>
                 <button
+                  type="button"
                   className={`${styles.commentLikeButton} ${
-                    commentItem.isLiked ? styles.liked : ""
+                    (commentLikes[commentItem.id] ?? commentItem.isLiked)
+                      ? styles.liked
+                      : ""
                   }`}
+                  onClick={() =>
+                    setCommentLikes((prev) => ({
+                      ...prev,
+                      [commentItem.id]: !(prev[commentItem.id] ?? commentItem.isLiked),
+                    }))
+                  }
                 >
-                  {commentItem.id === 2 ? (
-                    <img
-                      src={whiteHeartIcon}
-                      alt="Like comment"
-                      className={styles.commentLikeIcon}
-                    />
-                  ) : (
-                    <img
-                      src={redHeartIcon}
-                      alt="Like comment"
-                      className={styles.commentLikeIcon}
-                    />
-                  )}
+                  <img
+                    src={
+                      (commentLikes[commentItem.id] ?? commentItem.isLiked)
+                        ? redHeartIcon
+                        : whiteHeartIcon
+                    }
+                    alt="Like comment"
+                    className={styles.commentLikeIcon}
+                  />
                 </button>
               </div>
             ))}
@@ -419,9 +425,13 @@ const MyPostModal = ({
 
           <div className={styles.actionsSection}>
             <div className={styles.actionButtons}>
-              <button className={styles.actionButton} onClick={handleLike}>
+              <button
+                type="button"
+                className={styles.actionButton}
+                onClick={handleLike}
+              >
                 <img
-                  src={whiteHeartIcon}
+                  src={isLiked ? redHeartIcon : whiteHeartIcon}
                   alt="Like"
                   className={`${styles.actionIcon} ${
                     isLiked ? styles.liked : ""

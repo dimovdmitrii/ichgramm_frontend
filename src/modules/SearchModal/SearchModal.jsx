@@ -19,9 +19,15 @@ const SearchModal = ({ isOpen, onClose }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [recentSearches, setRecentSearches] = useState([]);
+  const [recentLoading, setRecentLoading] = useState(false);
 
   // Загружаем недавние поиски из БД
   useEffect(() => {
+    if (!isOpen) {
+      setRecentLoading(false);
+      return;
+    }
+    if (currentUser?._id) setRecentLoading(true);
     const loadRecentSearches = async () => {
       if (isOpen && currentUser?._id) {
         try {
@@ -36,7 +42,11 @@ const SearchModal = ({ isOpen, onClose }) => {
         } catch (error) {
           console.error("Failed to load recent searches:", error);
           setRecentSearches([]);
+        } finally {
+          setRecentLoading(false);
         }
+      } else {
+        setRecentLoading(false);
       }
     };
 
@@ -196,7 +206,7 @@ const SearchModal = ({ isOpen, onClose }) => {
           <>
             <div className={styles.searchResults}>
               {loading ? (
-                <div className={styles.loading}>Searching...</div>
+                <div className={styles.loading}>Please wait...</div>
               ) : searchResults.length > 0 ? (
                 searchResults.map((user) => (
                   <div
@@ -253,7 +263,9 @@ const SearchModal = ({ isOpen, onClose }) => {
           <>
             <h3 className={styles.subtitle}>Recent</h3>
             <div className={styles.recentList}>
-              {recentSearches.length > 0 ? (
+              {recentLoading ? (
+                <div className={styles.loading}>Please wait...</div>
+              ) : recentSearches.length > 0 ? (
                 recentSearches.map((user) => (
                   <div
                     key={user._id || user.username}

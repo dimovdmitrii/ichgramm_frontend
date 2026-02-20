@@ -222,8 +222,19 @@
   height: 16px;
 }
 
+.commentForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+}
+
 .commentInput {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-family-base);
   font-size: 12px;
   font-weight: 400;
   color: #000000;
@@ -236,4 +247,31 @@
 
 .commentInput::placeholder {
   color: #737373;
+}
+
+.commentSubmitButton {
+  font-family: var(--font-family-base);
+  font-size: 12px;
+  font-weight: 600;
+  color: #0095f6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  line-height: 16px;
+}
+
+.commentSubmitButton:disabled {
+  color: #b2dffc;
+  cursor: default;
+}
+
+.addedComments {
+  margin-bottom: 4px;
+}
+
+.addedComment {
+  font-size: 12px;
+  line-height: 16px;
+  margin-bottom: 2px;
 }

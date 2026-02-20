@@ -14,6 +14,8 @@ const MessagesListModal = ({
 }) => {
   const currentUser = useSelector(selectUser);
   const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (isOpen) {
       // Сохраняем текущую позицию прокрутки
@@ -50,6 +52,7 @@ const MessagesListModal = ({
   useEffect(() => {
     const loadChats = async () => {
       if (isOpen && currentUser?._id) {
+        setLoading(true);
         try {
           // Загружаем чаты из API
           const apiChats = await getChats();
@@ -112,7 +115,11 @@ const MessagesListModal = ({
           } else {
             setChats([]);
           }
+        } finally {
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     };
 
@@ -227,7 +234,9 @@ const MessagesListModal = ({
       <div className={styles.modal}>
         <h2 className={styles.title}>itcareerhub</h2>
         <div className={styles.chatsList}>
-          {chats.length > 0 ? (
+          {loading ? (
+            <div className={styles.loading}>Please wait...</div>
+          ) : chats.length > 0 ? (
             chats.map((chat) => (
               <button
                 key={chat.id || chat.username}

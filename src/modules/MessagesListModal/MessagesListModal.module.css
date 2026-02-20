@@ -131,6 +131,13 @@
   height: 16px;
 }
 
+.loading {
+  padding: 24px;
+  text-align: center;
+  color: #737373;
+  font-size: 14px;
+}
+
 .noChats {
   padding: 24px;
   text-align: center;
