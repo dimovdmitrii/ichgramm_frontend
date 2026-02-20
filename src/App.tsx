@@ -10,14 +10,18 @@ const AUTO_LOGIN = {
   password: "Qwer123!",
 };
 
+const SKIP_AUTO_LOGIN_KEY = "skipAutoLogin";
+
 function App() {
   const dispatch = useDispatch();
   const hasTokens = useSelector(selectTokens);
   const user = useSelector(selectUser);
 
-  // На задеплоенном сайте (production): при отсутствии сессии сразу логиним тестового пользователя
+  // На задеплоенном сайте (production): при отсутствии сессии сразу логиним тестового пользователя.
+  // Не делаем авто-логин, если пользователь уже выходил (чтобы мог залогиниться/зарегистрироваться сам).
   useEffect(() => {
-    if (import.meta.env.PROD && !hasTokens && !user) {
+    const userLoggedOut = typeof sessionStorage !== "undefined" && sessionStorage.getItem(SKIP_AUTO_LOGIN_KEY);
+    if (import.meta.env.PROD && !hasTokens && !user && !userLoggedOut) {
       const result = dispatch(loginUser(AUTO_LOGIN) as unknown as Parameters<typeof dispatch>[0]);
       (result as unknown as Promise<unknown>).catch((error: unknown) => {
         console.error("Auto-login failed:", error);
@@ -38,7 +42,9 @@ function App() {
   useEffect(() => {
     const baseUrl = import.meta.env.VITE_API_URL;
     if (!baseUrl) return;
-    const ping = () => fetch(`${baseUrl}/api/health`).catch(() => {});
+    // baseURL уже содержит /api (например http://localhost:3000/api), эндпоинт — /health
+    const healthUrl = baseUrl.endsWith("/api") ? `${baseUrl}/health` : `${baseUrl}/api/health`;
+    const ping = () => fetch(healthUrl).catch(() => {});
     ping();
     const interval = setInterval(ping, 14 * 60 * 1000);
     return () => clearInterval(interval);

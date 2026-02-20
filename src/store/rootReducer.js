@@ -3,6 +3,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "./auth/authSlice";
+import profileReducer from "./profile/profileSlice";
 
 // Настраиваем persist для слайса auth, чтобы сохранять только токены
 // user не сохраняем, так как он может содержать большие данные (base64 аватары и т.д.)
@@ -19,6 +20,7 @@ const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
 
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,
+  profile: profileReducer,
 });
 
 export default rootReducer;

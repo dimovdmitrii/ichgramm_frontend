@@ -38,72 +38,38 @@
 
 .backgroundContainer {
   position: relative;
-  width: 1195px;
-  height: 897px;
-  background: #ffffff;
+  width: 100%;
+  max-width: 1195px;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding-left: 119px;
+  justify-content: center;
+  gap: 48px;
+  padding: 24px;
+  flex-wrap: wrap;
 }
 
-.phonesContainer {
-  position: relative;
-  width: 301.033px;
-  height: 460px;
+.imageWrapper {
   flex-shrink: 0;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.phoneWrapper {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-.phoneBack {
-  transform: translateX(-30px) translateY(20px) rotate(-5deg);
-  z-index: 1;
-  opacity: 0.8;
-}
-
-.phoneFront {
-  transform: translateX(30px) translateY(-20px) rotate(5deg);
-  z-index: 2;
-}
-
-.phoneContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.phoneBackground {
-  position: absolute;
-  width: 123.14%;
-  height: 109.12%;
-  left: -12.1%;
-  top: 0;
-  object-fit: cover;
-}
-
-.phoneImage {
-  position: absolute;
-  left: 89.57px;
-  top: 16.69px;
-  width: 197.887px;
-  height: 426.51px;
+.mainBackgroundImage {
+  max-width: 100%;
+  height: auto;
   object-fit: contain;
-  z-index: 2;
+  display: block;
+  border-radius: 4px;
 }
 
 .errorMessage {
-  margin-left: 44px;
   max-width: 625px;
   text-align: left;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 280px;
 }
 
 .title {
@@ -125,20 +91,11 @@
   max-width: 475px;
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1024px) {
   .backgroundContainer {
-    width: 100%;
-    max-width: 1195px;
-    height: auto;
-    min-height: 897px;
-    padding: 40px 20px;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .phonesContainer {
-    margin-bottom: 40px;
+    gap: 32px;
+    padding: 20px 16px;
   }
 
   .errorMessage {
@@ -152,5 +109,38 @@
     top: auto;
     left: auto;
     margin-bottom: 20px;
+  }
+}
+
+/* Мобильные: картинка и текст по ширине экрана */
+@media (max-width: 767px) {
+  .backgroundContainer {
+    padding: 16px 12px;
+    gap: 24px;
+  }
+
+  .imageWrapper {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .mainBackgroundImage {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .errorMessage {
+    min-width: 0;
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .description {
+    font-size: 14px;
   }
 }

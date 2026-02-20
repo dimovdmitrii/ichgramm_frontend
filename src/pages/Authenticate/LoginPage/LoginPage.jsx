@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import Login from "../../../modules/LoginForm/Login";
 import imgBackground from "../../../assets/Images/Main_Background.png";
-import instagramLogo from "../../../assets/Images/Instagram_logo.png";
 import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
 
 const LoginPage = () => {
@@ -15,11 +14,6 @@ const LoginPage = () => {
               src={imgBackground}
               alt=""
               className={styles.backgroundImage}
-            />
-            <img
-              src={instagramLogo}
-              alt=""
-              className={styles.backgroundImageMobile}
             />
             <div className={styles.formContainer}>
               <div className={styles.loginCard}>

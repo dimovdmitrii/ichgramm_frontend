@@ -1,5 +1,6 @@
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import Footer from "../../shared/components/Footer/footer";
+import mainBackground from "../../assets/Images/Main_Background.png";
 import styles from "./NotFoundPage.module.css";
 
 const NotFoundPage = () => {
@@ -10,35 +11,12 @@ const NotFoundPage = () => {
         <div className={styles.content}>
           <div className={styles.errorCode}>404</div>
           <div className={styles.backgroundContainer}>
-            <div className={styles.phonesContainer}>
-              <div className={`${styles.phoneWrapper} ${styles.phoneBack}`}>
-                <div className={styles.phoneContainer}>
-                  <img
-                    src="https://www.figma.com/api/mcp/asset/e5c91df0-fa66-478a-b3af-50fe42ebc9dc"
-                    alt="Phone background"
-                    className={styles.phoneBackground}
-                  />
-                  <img
-                    src="https://www.figma.com/api/mcp/asset/fd14f1e6-78d3-4be4-a7a0-e32ed85dc516"
-                    alt="Phone screenshot"
-                    className={styles.phoneImage}
-                  />
-                </div>
-              </div>
-              <div className={`${styles.phoneWrapper} ${styles.phoneFront}`}>
-                <div className={styles.phoneContainer}>
-                  <img
-                    src="https://www.figma.com/api/mcp/asset/e5c91df0-fa66-478a-b3af-50fe42ebc9dc"
-                    alt="Phone background"
-                    className={styles.phoneBackground}
-                  />
-                  <img
-                    src="https://www.figma.com/api/mcp/asset/fd14f1e6-78d3-4be4-a7a0-e32ed85dc516"
-                    alt="Phone screenshot"
-                    className={styles.phoneImage}
-                  />
-                </div>
-              </div>
+            <div className={styles.imageWrapper}>
+              <img
+                src={mainBackground}
+                alt=""
+                className={styles.mainBackgroundImage}
+              />
             </div>
             <div className={styles.errorMessage}>
               <h1 className={styles.title}>Oops! Page Not Found (404 Error)</h1>

@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import styles from "./NotificationModal.module.css";
 import sashaaAvatar from "../../assets/Images/sashaa.jpg";
-import roadThumbnail from "../../assets/Images/roadSmall.png";
+import profilePost1 from "../../assets/Images/UsersProfile/Profile_Post1.png";
+import profilePost4 from "../../assets/Images/UsersProfile/Profile_Post4.png";
+import profilePost6 from "../../assets/Images/UsersProfile/Profile_Post6.png";
+
+const postThumbnails = [profilePost1, profilePost4, profilePost6];
 
 const NotificationModal = ({ isOpen, onClose }) => {
   useEffect(() => {
@@ -84,7 +88,7 @@ const NotificationModal = ({ isOpen, onClose }) => {
                 <span className={styles.time}> {notification.time}</span>
               </div>
               <img
-                src={roadThumbnail}
+                src={postThumbnails[notification.id - 1]}
                 alt="Post thumbnail"
                 className={styles.thumbnail}
               />

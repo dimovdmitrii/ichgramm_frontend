@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Footer from "../../shared/components/Footer/footer";
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import MyPostModal from "../../modules/MyPostModal/MyPostModal";
@@ -23,10 +23,15 @@ import {
   deletePost,
 } from "../../shared/api/users-api";
 import { selectUser } from "../../store/auth/authSelectors";
+import { setMyProfileData } from "../../store/profile/profileSlice";
+
+const selectProfileCache = (state) => state.profile;
 
 const MyProfilePage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentUser = useSelector(selectUser);
+  const profileCache = useSelector(selectProfileCache);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,29 +43,34 @@ const MyProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("grid");
 
-  const loadProfileData = async () => {
+  const loadProfileData = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     try {
-      setLoading(true);
-
-      // Загружаем профиль
       const profileData = await getProfile();
       setProfileState(profileData);
 
-      // Используем _id из profileData для загрузки постов
       const userId = profileData?._id || currentUser?._id;
+      let postsData = [];
       if (userId) {
         try {
-          const postsData = await getUserPosts(userId);
-          console.log("Loading posts for user:", userId);
-          console.log("Posts received:", postsData);
-          setPostsState(postsData || []);
+          postsData = await getUserPosts(userId) || [];
+          setPostsState(postsData);
         } catch (postsError) {
           console.error("Failed to load posts:", postsError);
           setPostsState([]);
         }
       } else {
-        console.error("No userId found");
         setPostsState([]);
+      }
+
+      if (userId) {
+        dispatch(
+          setMyProfileData({
+            profile: profileData,
+            posts: postsData,
+            userId: String(userId),
+          })
+        );
       }
     } catch (error) {
       console.error("Failed to load profile:", error);
@@ -72,38 +82,39 @@ const MyProfilePage = () => {
   };
 
   useEffect(() => {
-    // Загружаем данные профиля независимо от currentUser
-    // getProfile() использует токен из заголовков, поэтому должен работать
-    loadProfileData();
+    const userId = currentUser?._id;
+    const hasCache =
+      profileCache.userId &&
+      profileCache.myProfile &&
+      String(profileCache.userId) === String(userId);
+
+    if (hasCache) {
+      setProfileState(profileCache.myProfile);
+      setPostsState(profileCache.myPosts || []);
+      setLoading(false);
+      loadProfileData(false);
+    } else {
+      loadProfileData(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?._id]);
 
-  // Слушаем событие создания нового поста
+  // Слушаем событие создания нового поста — обновляем без лоадинга
   useEffect(() => {
     const handlePostCreated = () => {
-      if (currentUser?._id) {
-        loadProfileData();
-      }
+      if (currentUser?._id) loadProfileData(false);
     };
-
     window.addEventListener("postsUpdated", handlePostCreated);
-    return () => {
-      window.removeEventListener("postsUpdated", handlePostCreated);
-    };
+    return () => window.removeEventListener("postsUpdated", handlePostCreated);
   }, [currentUser?._id]);
 
-  // Слушаем событие обновления профиля (например, при подписке/отписке)
+  // Слушаем событие обновления профиля — обновляем без лоадинга
   useEffect(() => {
     const handleProfileUpdated = () => {
-      if (currentUser?._id) {
-        loadProfileData();
-      }
+      if (currentUser?._id) loadProfileData(false);
     };
-
     window.addEventListener("profileUpdated", handleProfileUpdated);
-    return () => {
-      window.removeEventListener("profileUpdated", handleProfileUpdated);
-    };
+    return () => window.removeEventListener("profileUpdated", handleProfileUpdated);
   }, [currentUser?._id]);
 
   const handleEditProfile = () => {

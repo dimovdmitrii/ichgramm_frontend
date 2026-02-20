@@ -48,14 +48,22 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+const SKIP_AUTO_LOGIN_KEY = "skipAutoLogin";
+
 export const logoutUser = createAsyncThunk(
   "logout",
   async (_, { rejectWithValue }) => {
     try {
       await authApi.logOut();
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.setItem(SKIP_AUTO_LOGIN_KEY, "1");
+      }
       return null;
     } catch (error: unknown) {
       const axiosError = error as ApiError;
+      if (typeof sessionStorage !== "undefined") {
+        sessionStorage.setItem(SKIP_AUTO_LOGIN_KEY, "1");
+      }
       return rejectWithValue(
         axiosError?.response?.data?.message ||
           axiosError?.message ||

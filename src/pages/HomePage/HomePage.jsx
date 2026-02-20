@@ -16,8 +16,9 @@ const HomePage = () => {
       <div className={styles.homePage}>
         <main className={styles.mainContent}>
           <div className={styles.postsGrid}>
+          <Post postImage={mostInkovImage} />
             <Post postImage={yablokoImage} />
-            <Post postImage={mostInkovImage} />
+            
             <Post postImage={ispolzovalImage} />
             <Post postImage={defaultPostImage} />
           </div>
