@@ -50,6 +50,11 @@ const LoginForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <div className={styles.testCredentials}>
+        <p className={styles.testCredentialsText}>Test:</p>
+        <p className={styles.testCredentialsText}>Login: dima1</p>
+        <p className={styles.testCredentialsText}>Pass: Qwer123!</p>
+      </div>
       <div className={`${styles.inputWrapper} ${styles.usernameInput}`}>
         <TextField
           type="text"
