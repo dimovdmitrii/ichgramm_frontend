@@ -69,6 +69,19 @@
   align-items: center;
 }
 
+.demoDisclaimer {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 118px;
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--color-text-muted, #737373);
+  text-align: center;
+}
+
 .logoContainer {
   position: absolute;
   width: 190px;

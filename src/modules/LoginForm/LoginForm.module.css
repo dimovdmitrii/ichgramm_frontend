@@ -1,16 +1,30 @@
 .form {
   position: absolute;
-  height: 315px;
+  height: 350px;
   left: 0;
   right: 0;
   top: 113px;
+}
+
+.demoDisclaimer {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 0;
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--color-text-muted, #737373);
+  text-align: center;
+  z-index: 2;
 }
 
 .testCredentials {
   position: absolute;
   left: 40px;
   right: 40px;
-  top: 0;
+  top: 34px;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -47,18 +61,18 @@
 }
 
 .usernameInput {
-  top: 52px;
+  top: 86px;
 }
 
 .passwordInput {
-  top: 96px;
+  top: 130px;
 }
 
 .buttonWrapper {
   position: absolute;
   left: 40px;
   right: 40px;
-  top: 148px;
+  top: 182px;
   width: auto;
   height: 32px;
 }
@@ -126,6 +140,14 @@
     height: auto;
     padding: 0 30px 30px;
     min-height: 0;
+  }
+
+  .demoDisclaimer {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin-bottom: 8px;
   }
 
   .testCredentials {

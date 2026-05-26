@@ -295,12 +295,6 @@ const OtherProfilePage = () => {
                       <a href={website.startsWith("http") ? website : `https://${website}`} className={styles.externalLink} target="_blank" rel="noopener noreferrer">{website}</a>
                     </div>
                   )}
-                  {!website && (
-                    <div className={styles.linkContainer}>
-                      <img src={linkIcon} alt="" className={styles.linkIcon} />
-                      <a href="https://bit.ly/3rpiIbh" className={styles.externalLink}>bit.ly/3rpiIbh</a>
-                    </div>
-                  )}
                 </div>
                 <div className={styles.profileActions}>
                   <button type="button" className={styles.followButton} onClick={handleToggleFollow}>

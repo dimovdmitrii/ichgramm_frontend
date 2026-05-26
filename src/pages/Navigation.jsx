@@ -10,9 +10,9 @@ import ExplorePage from "./ExplorePage/ExplorePage";
 import ResetPage from "./Authenticate/ResetPage/ResetPage";
 
 import OtherProfilePage from "./OtherProfilePage/OtherProfilePage";
-import PrivacyPolicy from "./PrivacyTerms/PrivacyPolicy/PrivacyPolicy";
+import PrivacyPage from "./PrivacyTerms/PrivacyPage/PrivacyPage";
 import Terms from "./PrivacyTerms/Terms/Terms";
-import CookiesPolicy from "./PrivacyTerms/CookiesPolicy/CookiesPolicy";
+import CookiesPage from "./PrivacyTerms/CookiesPage/CookiesPage";
 import LearnMore from "./PrivacyTerms/LearnMore/LearnMore";
 import PublicRoute from "../shared/components/PublicRoute/PublicRoute";
 import PrivateRoute from "../shared/components/PrivateRoute/PrivateRoute";
@@ -24,9 +24,9 @@ const Navigation = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/reset" element={<ResetPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPage />} />
         <Route path="/terms" element={<Terms />} />
-        <Route path="/cookies-policy" element={<CookiesPolicy />} />
+        <Route path="/cookies-policy" element={<CookiesPage />} />
         <Route path="/learn-more" element={<LearnMore />} />
       </Route>
       <Route element={<PrivateRoute />}>

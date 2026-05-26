@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "../PrivacyTermsPage.module.css";
 
-const PrivacyPolicy = () => {
+const PrivacyPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
@@ -30,4 +30,4 @@ const PrivacyPolicy = () => {
   );
 };
 
-export default PrivacyPolicy;
+export default PrivacyPage;

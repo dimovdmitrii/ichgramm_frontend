@@ -226,7 +226,7 @@ const MyProfilePage = () => {
     <>
       <Sidebar />
       <div className={styles.pageWrapper}>
-        {/* Верхняя полоса (как в Instagram): настройки, username, уведомления */}
+        {/* Верхняя полоса (мобильная): настройки, username, уведомления */}
         <header className={styles.topBar}>
           <button
             type="button"

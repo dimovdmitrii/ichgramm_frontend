@@ -80,8 +80,8 @@ const RegisterForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
       <div className={styles.legalContainer}>
         <div className={styles.legalTextRow}>
           <p className={styles.legalText}>
-            People who use our service may have uploaded your contact
-            information to Instagram.{" "}
+            People who use ICHGRAM may upload contact information to help you
+            find friends on this platform.{" "}
             <Link to="/learn-more" className={styles.legalLink}>
               Learn More
             </Link>

@@ -38,7 +38,7 @@
   padding: 62px 20px 0 170px;
 }
 
-/* Верхняя полоса (Instagram-style): только на мобильных */
+/* Верхняя полоса профиля: только на мобильных */
 .topBar {
   display: none;
 }
@@ -456,7 +456,7 @@
   font-size: 16px;
 }
 
-/* Мобильная версия профиля (расположение как в Instagram) */
+/* Мобильная версия профиля */
 @media (max-width: 767px) {
   .header {
     flex-direction: row;

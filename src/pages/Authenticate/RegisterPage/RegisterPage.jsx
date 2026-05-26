@@ -18,6 +18,9 @@ const RegisterPage = () => {
                     className={styles.logo}
                   />
                 </div>
+                <p className={styles.demoDisclaimer}>
+                  Educational demo app. Not affiliated with Meta or Instagram.
+                </p>
                 <Register />
               </div>
               <div className={styles.loginCard}>
