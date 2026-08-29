@@ -1,6 +1,6 @@
 import Sidebar from "../../shared/components/Sidebar/Sidebar";
 import Footer from "../../shared/components/Footer/footer";
-import mainBackground from "../../assets/Images/Main_Background.png";
+import mainBackground from "../../assets/Images/Auth_Illustration.svg";
 import styles from "./NotFoundPage.module.css";
 
 const NotFoundPage = () => {

@@ -51,7 +51,7 @@ const LoginForm = ({ submitForm, isSubmitSuccess, requestErrors }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
       <p className={styles.demoDisclaimer}>
-        Educational demo app. Not affiliated with Meta or Instagram.
+        Educational demo project built for a web development course. Not affiliated with any existing social network.
       </p>
       <div className={styles.testCredentials}>
         <p className={styles.testCredentialsText}>Test:</p>

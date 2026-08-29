@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./RegisterPage.module.css";
 import Register from "../../../modules/RegisterForm/Register";
-import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
+import logoIcon from "../../../assets/icons/Logo_Wordmark.svg";
 
 const RegisterPage = () => {
   return (
@@ -19,7 +19,7 @@ const RegisterPage = () => {
                   />
                 </div>
                 <p className={styles.demoDisclaimer}>
-                  Educational demo app. Not affiliated with Meta or Instagram.
+                  Educational demo project built for a web development course. Not affiliated with any existing social network.
                 </p>
                 <Register />
               </div>

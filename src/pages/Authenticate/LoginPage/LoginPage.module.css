@@ -138,7 +138,7 @@
   text-decoration: underline;
 }
 
-/* Адаптивность 777px и ниже: Main_Background за страницей, форма с backdrop-blur */
+/* Адаптивность 777px и ниже: Auth_Illustration за страницей, форма с backdrop-blur */
 @media (max-width: 777px) {
   .loginPage {
     padding: 16px;
@@ -175,7 +175,7 @@
     left: 0;
   }
 
-  /* На мобильных: Main_Background на весь экран за контентом */
+  /* На мобильных: Auth_Illustration на весь экран за контентом */
   .backgroundImage {
     display: block;
     position: absolute;
@@ -202,7 +202,7 @@
     z-index: 1;
   }
 
-  /* Форма логина с размытием фона (за ней видна Main_Background) */
+  /* Форма логина с размытием фона (за ней видна Auth_Illustration) */
   .loginCard {
     position: relative;
     top: 0;

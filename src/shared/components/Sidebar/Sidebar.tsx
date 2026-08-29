@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 import styles from "./Sidebar.module.css";
 import { selectUser } from "../../../store/auth/authSelectors";
-import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
+import logoIcon from "../../../assets/icons/Logo_Wordmark.svg";
 import mainIcon from "../../../assets/icons/sidebar/main.svg";
 import mainBoldIcon from "../../../assets/icons/sidebar/main_bold.svg";
 import searchIcon from "../../../assets/icons/sidebar/search.svg";

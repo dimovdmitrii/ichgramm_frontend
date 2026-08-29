@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import styles from "./LoginPage.module.css";
 import Login from "../../../modules/LoginForm/Login";
-import imgBackground from "../../../assets/Images/Main_Background.png";
-import logoIcon from "../../../assets/icons/Logo_Text_Max.svg";
+import imgBackground from "../../../assets/Images/Auth_Illustration.svg";
+import logoIcon from "../../../assets/icons/Logo_Wordmark.svg";
 
 const LoginPage = () => {
   return (

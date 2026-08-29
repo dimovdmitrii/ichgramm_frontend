@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 581" width="380" height="581" role="img" aria-label="Abstract illustration of a mobile app interface">
+  <defs>
+    <clipPath id="backScreen"><rect x="22" y="72" width="136" height="420" rx="18"/></clipPath>
+    <clipPath id="frontScreen"><rect x="110" y="34" width="204" height="505" rx="20"/></clipPath>
+  </defs>
+
+  <!-- Back phone -->
+  <rect x="14" y="64" width="152" height="436" rx="24" fill="#FFFFFF" stroke="#D5D5D5" stroke-width="3"/>
+  <g clip-path="url(#backScreen)">
+    <rect x="34" y="92" width="48" height="7" rx="3.5" fill="#E4E4E4"/>
+    <rect x="34" y="108" width="112" height="14" rx="7" fill="#F0F0F0"/>
+    <rect x="34" y="134" width="52" height="52" rx="6" fill="#E8E8E8"/>
+    <rect x="94" y="134" width="52" height="52" rx="6" fill="#EFEFEF"/>
+    <rect x="34" y="194" width="52" height="52" rx="6" fill="#EFEFEF"/>
+    <rect x="94" y="194" width="52" height="52" rx="6" fill="#E8E8E8"/>
+    <rect x="34" y="254" width="52" height="52" rx="6" fill="#E8E8E8"/>
+    <rect x="94" y="254" width="52" height="52" rx="6" fill="#EFEFEF"/>
+    <rect x="34" y="314" width="52" height="52" rx="6" fill="#EFEFEF"/>
+    <rect x="94" y="314" width="52" height="52" rx="6" fill="#E8E8E8"/>
+    <rect x="34" y="374" width="52" height="52" rx="6" fill="#E8E8E8"/>
+    <rect x="94" y="374" width="52" height="52" rx="6" fill="#EFEFEF"/>
+    <rect x="34" y="434" width="52" height="52" rx="6" fill="#EFEFEF"/>
+    <rect x="94" y="434" width="52" height="52" rx="6" fill="#E8E8E8"/>
+  </g>
+
+  <!-- Front phone -->
+  <rect x="100" y="24" width="224" height="525" rx="28" fill="#FFFFFF" stroke="#1A1A1A" stroke-width="3.5"/>
+  <g clip-path="url(#frontScreen)">
+    <!-- notch -->
+    <rect x="178" y="34" width="68" height="16" rx="8" fill="#1A1A1A"/>
+
+    <!-- top bar -->
+    <rect x="124" y="62" width="64" height="9" rx="4.5" fill="#D8D8D8"/>
+    <circle cx="280" cy="66" r="6" fill="none" stroke="#D8D8D8" stroke-width="2"/>
+    <circle cx="300" cy="66" r="6" fill="none" stroke="#D8D8D8" stroke-width="2"/>
+    <rect x="110" y="84" width="204" height="1" fill="#EEEEEE"/>
+
+    <!-- story placeholders -->
+    <circle cx="132" cy="110" r="16" fill="#F0F0F0" stroke="#DCDCDC" stroke-width="2"/>
+    <circle cx="172" cy="110" r="16" fill="#F0F0F0" stroke="#DCDCDC" stroke-width="2"/>
+    <circle cx="212" cy="110" r="16" fill="#F0F0F0" stroke="#DCDCDC" stroke-width="2"/>
+    <circle cx="252" cy="110" r="16" fill="#F0F0F0" stroke="#DCDCDC" stroke-width="2"/>
+    <circle cx="292" cy="110" r="16" fill="#F0F0F0" stroke="#DCDCDC" stroke-width="2"/>
+    <rect x="110" y="138" width="204" height="1" fill="#EEEEEE"/>
+
+    <!-- post header -->
+    <circle cx="126" cy="158" r="11" fill="#EDEDED" stroke="#DCDCDC" stroke-width="2"/>
+    <rect x="146" y="152" width="66" height="8" rx="4" fill="#DCDCDC"/>
+    <rect x="146" y="165" width="40" height="6" rx="3" fill="#EAEAEA"/>
+    <circle cx="296" cy="158" r="1.8" fill="#C9C9C9"/>
+    <circle cx="303" cy="158" r="1.8" fill="#C9C9C9"/>
+    <circle cx="310" cy="158" r="1.8" fill="#C9C9C9"/>
+
+    <!-- post image placeholder -->
+    <rect x="110" y="180" width="204" height="196" fill="#ECECEC"/>
+    <circle cx="160" cy="222" r="16" fill="#DCDCDC"/>
+    <path d="M110 376 L168 300 L206 342 L246 306 L314 376 Z" fill="#DADADA"/>
+    <path d="M110 376 L150 322 L196 376 Z" fill="#D0D0D0"/>
+
+    <!-- action row -->
+    <circle cx="126" cy="396" r="9" fill="none" stroke="#C9C9C9" stroke-width="2"/>
+    <circle cx="152" cy="396" r="9" fill="none" stroke="#C9C9C9" stroke-width="2"/>
+    <circle cx="178" cy="396" r="9" fill="none" stroke="#C9C9C9" stroke-width="2"/>
+    <circle cx="298" cy="396" r="9" fill="none" stroke="#C9C9C9" stroke-width="2"/>
+
+    <!-- caption lines -->
+    <rect x="112" y="418" width="150" height="8" rx="4" fill="#DCDCDC"/>
+    <rect x="112" y="434" width="112" height="8" rx="4" fill="#E6E6E6"/>
+    <rect x="112" y="450" width="176" height="7" rx="3.5" fill="#EDEDED"/>
+    <rect x="110" y="472" width="204" height="1" fill="#EEEEEE"/>
+
+    <!-- next post, clipped by screen edge -->
+    <circle cx="126" cy="492" r="11" fill="#EDEDED" stroke="#DCDCDC" stroke-width="2"/>
+    <rect x="146" y="486" width="66" height="8" rx="4" fill="#DCDCDC"/>
+    <rect x="110" y="512" width="204" height="27" fill="#ECECEC"/>
+  </g>
+</svg>
